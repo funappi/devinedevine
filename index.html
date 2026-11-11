@@ -1,0 +1,2167 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#14111f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Sur le Front">
+<title>Sur le Front – jeu d'ambiance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#14111f; --card:#211c33; --line:#332b4d; --txt:#f6f2ff; --mute:#a59cc4;
+  --ok:#22c55e; --pass:#f97316; --acc:#facc15; --adult:#ec4899;
+  --font:'Bricolage Grotesque',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--txt);font-family:var(--font);overscroll-behavior:none}
+body{padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+button{font-family:inherit;color:inherit;border:0;cursor:pointer}
+.screen{display:none;min-height:100%;flex-direction:column}
+.screen.on{display:flex}
+.wrap{width:100%;max-width:920px;margin:0 auto;padding:20px 16px 40px}
+
+/* HOME */
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px}
+.logo{font-size:34px;font-weight:800;letter-spacing:-1px;line-height:1}
+.logo span{color:var(--acc)}
+.sub{color:var(--mute);margin:4px 0 18px;font-size:15px}
+.iconbtn{background:var(--card);width:44px;height:44px;border-radius:14px;font-size:20px;display:grid;place-items:center;border:1px solid var(--line);flex:none}
+.bar2{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin-bottom:10px}
+.bar2 b{font-size:16px}
+.bar2 small{display:block;color:var(--mute);font-size:13px;margin-top:2px}
+.bar2 .right{display:flex;align-items:center;gap:10px}
+.switch{position:relative;width:54px;height:32px;border-radius:99px;background:#3a3354;transition:.2s;flex:none}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;transition:.2s}
+.switch.on{background:var(--adult)}
+.switch.on::after{left:25px}
+.switch.team.on{background:var(--ok)}
+h2.sec{font-size:15px;text-transform:uppercase;letter-spacing:1.5px;color:var(--mute);margin:22px 0 10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.cat{position:relative;border-radius:18px;padding:14px 12px 12px;min-height:108px;text-align:left;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;transition:transform .12s;color:#fff}
+.cat:active{transform:scale(.96)}
+.cat .em{font-size:30px}
+.cat .nm{font-weight:800;font-size:17px;line-height:1.1}
+.cat .ct{font-size:12px;opacity:.8;font-weight:500}
+.cat .tag{position:absolute;top:10px;right:10px;font-size:11px;font-weight:800;background:rgba(0,0,0,.35);padding:3px 7px;border-radius:99px}
+.cat.add{background:transparent;border:2px dashed var(--line);color:var(--mute);align-items:center;justify-content:center;text-align:center}
+
+/* GENERIC */
+.btn{background:var(--acc);color:#1a1400;font-weight:800;font-size:18px;padding:16px 22px;border-radius:16px;width:100%}
+.btn.ghost{background:var(--card);color:var(--txt);border:1px solid var(--line)}
+.btn.small{width:auto;font-size:15px;padding:10px 14px}
+.row{display:flex;gap:10px}
+.field{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+.field label{display:block;font-weight:700;margin-bottom:8px}
+.field small{color:var(--mute);display:block;margin-top:6px;font-size:13px}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.seg button{background:#2c2544;padding:10px 14px;border-radius:12px;font-weight:700}
+.seg button.on{background:var(--acc);color:#1a1400}
+.line{display:flex;align-items:center;justify-content:space-between;gap:12px}
+input[type=text],textarea{width:100%;background:#120f1c;border:1px solid var(--line);color:var(--txt);border-radius:12px;padding:12px;font:inherit;font-size:16px}
+textarea{min-height:220px;resize:vertical}
+.back{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+.back h1{margin:0;font-size:24px}
+.info{color:var(--mute);font-size:14px;line-height:1.45;margin:0 0 14px}
+
+/* MODAL */
+.modal{position:fixed;inset:0;background:rgba(5,3,12,.75);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}
+.modal.on{display:flex}
+.modal .box{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:22px;max-width:400px;width:100%;text-align:center}
+.modal h3{margin:0 0 8px;font-size:22px}
+.modal p{color:var(--mute);margin:0 0 18px;line-height:1.4}
+
+/* READY + PLAY */
+#ready,#play{position:fixed;inset:0;align-items:center;justify-content:center;text-align:center;padding:20px;user-select:none;-webkit-user-select:none;touch-action:none}
+#ready{background:var(--bg)}
+#ready .catname{font-size:16px;color:var(--mute);text-transform:uppercase;letter-spacing:2px}
+#ready .big{font-size:clamp(28px,7vw,54px);font-weight:800;line-height:1.05;margin:10px 0}
+#ready .count{font-size:clamp(90px,28vw,200px);font-weight:800;color:var(--acc);line-height:1}
+#ready .hint{color:var(--mute);font-size:16px;max-width:520px;margin:10px auto 0;line-height:1.4}
+.legend{display:flex;gap:14px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.legend div{background:var(--card);border-radius:14px;padding:10px 14px;font-weight:700;font-size:15px}
+#play{background:#1d1830;transition:background .15s}
+#play.ok{background:var(--ok)}
+#play.pass{background:var(--pass)}
+#play .center{max-width:94vw}
+#play .timer{position:absolute;top:calc(12px + env(safe-area-inset-top));left:0;right:0;font-size:clamp(22px,5vw,34px);font-weight:800;opacity:.9}
+#play .timer.hot{color:#ff5a5a}
+#play .score{position:absolute;top:calc(14px + env(safe-area-inset-top));right:calc(20px + env(safe-area-inset-right));font-weight:800;font-size:20px;opacity:.8}
+#play .quit{position:absolute;top:calc(10px + env(safe-area-inset-top));left:calc(14px + env(safe-area-inset-left));background:rgba(0,0,0,.25);width:42px;height:42px;border-radius:12px;font-size:20px}
+#word{font-weight:800;line-height:1.02;letter-spacing:-1px;padding:0 2vw;word-break:break-word;hyphens:auto}
+#feedback{font-size:clamp(50px,14vw,120px);font-weight:800;display:none}
+#play .taps{position:absolute;bottom:calc(10px + env(safe-area-inset-bottom));left:0;right:0;display:flex;justify-content:space-between;padding:0 18px;color:rgba(255,255,255,.45);font-size:13px;font-weight:700;pointer-events:none}
+#play .tapzone{position:absolute;top:60px;bottom:0;width:50%}
+#play .tapzone.l{left:0} #play .tapzone.r{right:0}
+.sensorwarn{position:absolute;bottom:40px;left:0;right:0;font-size:13px;color:#ffd7a8;display:none}
+.progress{position:absolute;bottom:0;left:0;height:6px;background:var(--acc);transition:width .1s linear}
+
+/* END / TEAMS */
+.endhead{text-align:center;padding:10px 0 6px}
+.endhead .n{font-size:96px;font-weight:800;line-height:1;color:var(--acc)}
+.endhead .n.t{font-size:clamp(30px,8vw,52px);line-height:1.1}
+.endhead .l{color:var(--mute);font-size:18px}
+.res{list-style:none;padding:0;margin:18px 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.res li{background:var(--card);border-radius:12px;padding:10px 12px;font-weight:700;display:flex;gap:10px;align-items:center;border-left:5px solid var(--pass)}
+.res li.ok{border-left-color:var(--ok)}
+.board{display:flex;flex-direction:column;gap:8px;margin:14px 0}
+.brow{display:grid;grid-template-columns:14px minmax(70px,1.1fr) 3fr 40px;gap:10px;align-items:center;background:var(--card);border-radius:12px;padding:10px 12px;font-weight:700}
+.brow.cur{outline:2px solid var(--acc)}
+.brow .dot{width:12px;height:12px;border-radius:50%}
+.brow .bn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.brow .bar{height:10px;background:#120f1c;border-radius:99px;overflow:hidden}
+.brow .bar i{display:block;height:100%;border-radius:99px;transition:width .4s}
+.brow b{text-align:right;font-size:20px}
+.hero{text-align:center;padding:18px 0 4px}
+.roundtag{display:inline-block;background:var(--card);border:1px solid var(--line);padding:6px 14px;border-radius:99px;font-weight:700;color:var(--mute)}
+.hteam{font-size:24px;font-weight:800;margin-top:18px}
+.hname{font-size:clamp(44px,13vw,84px);font-weight:800;line-height:1;margin:6px 0 12px;letter-spacing:-1px;word-break:break-word}
+.hhint{color:var(--mute);line-height:1.45;margin:0 auto;max-width:480px}
+.hcat{margin-top:12px;font-weight:700;color:var(--acc)}
+#handoff .row{position:sticky;bottom:0;padding:14px 0 calc(10px + env(safe-area-inset-bottom));background:linear-gradient(rgba(20,17,31,0),var(--bg) 35%)}
+.sstat{font-weight:800;font-size:18px}
+.gauge{position:relative;height:46px;border-radius:99px;overflow:hidden;background:linear-gradient(90deg,rgba(249,115,22,.35),#120f1c 40%,#120f1c 60%,rgba(34,197,94,.35))}
+.gauge .gl,.gauge .gr{position:absolute;top:0;bottom:0;display:flex;align-items:center;font-size:12px;font-weight:700;color:var(--mute);padding:0 14px}
+.gauge .gl{left:0}.gauge .gr{right:0}
+.gauge i{position:absolute;top:5px;left:50%;width:36px;height:36px;margin-left:-18px;border-radius:50%;background:#fff;box-shadow:0 2px 8px #0008;transition:left .08s linear}
+.gstate{text-align:center;font-size:30px;font-weight:800;margin:12px 0 4px;min-height:36px}
+.foot{text-align:center;color:var(--mute);font-size:14px;margin:34px 0 4px;font-weight:500}
+.foot a{color:var(--acc);font-weight:800;text-decoration:none}
+.prow{display:flex;align-items:center;gap:8px;margin-top:8px}
+.prow .pn{width:22px;text-align:center;color:var(--mute);font-weight:800;flex:none}
+.prow input{flex:1}
+.prow .x{background:#2c2544;width:42px;height:42px;border-radius:12px;font-size:16px;flex:none;color:var(--mute)}
+.addp{margin-top:10px;width:100%}
+.modal .box{max-height:94vh;overflow:auto}
+#qrCanvas{width:min(250px,62vw);height:min(250px,62vw);background:#fff;border-radius:14px;image-rendering:pixelated;display:block;margin:0 auto 8px}
+.qrmsg{color:#ffd7a8;font-size:13px;min-height:0;margin-bottom:6px}
+.qrsmall{display:block;color:var(--mute);font-size:12px;margin-top:6px}
+.toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%);background:#000c;padding:12px 16px;border-radius:12px;font-weight:600;display:none;z-index:60;max-width:90%;text-align:center}
+</style>
+</head>
+<body>
+
+<!-- ============ HOME ============ -->
+<section id="home" class="screen on">
+  <div class="wrap">
+    <header class="top">
+      <div class="logo">Sur le <span>Front</span></div>
+      <div style="display:flex;gap:8px"><button class="iconbtn" id="openShare" aria-label="Partager le jeu (QR code)">📲</button><button class="iconbtn" id="openSettings" aria-label="Réglages">⚙️</button></div>
+    </header>
+    <p class="sub">Téléphone sur le front, les autres font deviner. Incline vers le <b>haut</b> pour valider, vers le <b>bas</b> pour passer.</p>
+
+    <div class="bar2">
+      <div><b>👥 Mode équipes</b><small id="teamSub"></small></div>
+      <div class="right"><button class="iconbtn" id="cfgTeams" style="display:none" aria-label="Configurer les équipes">✏️</button><button class="switch team" id="teamSwitch" aria-label="Mode équipes"></button></div>
+    </div>
+    <div class="bar2">
+      <div><b>🔞 Mode adulte</b><small>Thèmes osés pour soirées entre adultes et couples</small></div>
+      <button class="switch" id="adultSwitch" aria-label="Mode adulte"></button>
+    </div>
+
+    <h2 class="sec">Thèmes</h2>
+    <div class="grid" id="gridMain"></div>
+
+    <div id="adultSection" style="display:none">
+      <h2 class="sec" style="color:var(--adult)">🔞 Entre adultes</h2>
+      <div class="grid" id="gridAdult"></div>
+    </div>
+
+    <h2 class="sec">Mes listes</h2>
+    <div class="grid" id="gridCustom"></div>
+
+    <footer class="foot">Made by <a href="https://github.com/funappi" target="_blank" rel="noopener">funappi</a></footer>
+  </div>
+</section>
+
+<!-- ============ SETTINGS ============ -->
+<section id="settings" class="screen">
+  <div class="wrap">
+    <div class="back"><button class="iconbtn" data-go="home">←</button><h1>Réglages</h1></div>
+
+    <div class="field">
+      <label>Durée d'une manche</label>
+      <div class="seg" id="segDur"></div>
+    </div>
+    <div class="field">
+      <div class="line"><div><label style="margin:0">Inverser les gestes</label><small id="invTxt"></small></div><button class="switch" id="swInvert"></button></div>
+    </div>
+    <div class="field">
+      <label>Sensibilité de l'inclinaison</label>
+      <div class="seg" id="segSens"></div>
+    </div>
+    <div class="field">
+      <div class="line"><div><label style="margin:0">Tester le capteur</label><small>Vérifie que l'inclinaison est détectée sur ton téléphone</small></div><button class="btn ghost small" id="openSensor">Tester</button></div>
+    </div>
+    <div class="field">
+      <div class="line"><label style="margin:0">Sons</label><button class="switch" id="swSound"></button></div>
+    </div>
+    <div class="field">
+      <div class="line"><div><label style="margin:0">Vibrations</label><small>Android uniquement</small></div><button class="switch" id="swVib"></button></div>
+    </div>
+    <div class="field">
+      <div class="line"><div><label style="margin:0">Contrôle tactile en secours</label><small>Toucher à droite = valider, à gauche = passer</small></div><button class="switch" id="swTap"></button></div>
+    </div>
+    <div class="field">
+      <div class="line"><div><label style="margin:0">Réinitialiser les mots déjà vus</label><small>Les mots tombés ne reviennent pas tant que la liste n'est pas épuisée.</small></div><button class="btn ghost small" id="resetSeen">Vider</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SENSOR TEST ============ -->
+<section id="sensor" class="screen">
+  <div class="wrap">
+    <div class="back"><button class="iconbtn" id="sensorBack">←</button><h1>Test du capteur</h1></div>
+    <div class="field">
+      <div id="sStatus" class="sstat">⏳ Recherche du capteur…</div>
+      <div id="sHelp" class="info" style="margin:8px 0 0"></div>
+    </div>
+    <div class="field">
+      <div class="gauge"><span class="gl">⬇️ passer</span><span class="gr">valider ⬆️</span><i id="gDot"></i></div>
+      <div id="gState" class="gstate">Neutre</div>
+      <small>Tiens le téléphone comme sur ton front, puis incline-le vers le plafond (valider) et vers le sol (passer). Les deux sens doivent faire bouger le point.</small>
+    </div>
+    <div class="row"><button class="btn ghost" id="sRecal">Recalibrer</button><button class="btn" id="sensorOk">Terminé</button></div>
+  </div>
+</section>
+
+<!-- ============ TEAMS SETUP ============ -->
+<section id="teams" class="screen">
+  <div class="wrap">
+    <div class="back"><button class="iconbtn" id="teamsBack">←</button><h1>Équipes</h1></div>
+    <p class="info">À chaque manche, <b>un joueur de chaque équipe</b> passe : les 1<sup>ers</sup> à la manche 1, les 2<sup>es</sup> à la manche 2, et ainsi de suite. Le joueur met le téléphone sur son front, ses équipiers lui font deviner les mots. Pour un jeu de couple, fais une équipe par couple.</p>
+    <div class="field">
+      <label>Nombre d'équipes</label>
+      <div class="seg" id="segTeamN"></div>
+      <div class="seg" style="margin-top:10px"><button id="presetGuys">👫 Filles vs Gars</button></div>
+    </div>
+    <div id="teamBoxes"></div>
+    <p class="info" id="teamInfo"></p>
+    <button class="btn" id="teamsOk">Valider</button>
+  </div>
+</section>
+
+<!-- ============ CUSTOM ============ -->
+<section id="custom" class="screen">
+  <div class="wrap">
+    <div class="back"><button class="iconbtn" data-go="home">←</button><h1 id="customTitle">Nouvelle liste</h1></div>
+    <div class="field"><label>Nom de la liste</label><input type="text" id="cName" maxlength="30" placeholder="Ex : Les potes du lycée"></div>
+    <div class="field"><label>Mots (un par ligne)</label><textarea id="cWords" placeholder="Tonton Gérard&#10;Le barbecue de 2019&#10;..."></textarea><small id="cCount">0 mot</small></div>
+    <div class="row">
+      <button class="btn ghost" id="cDelete" style="display:none">Supprimer</button>
+      <button class="btn" id="cSave">Enregistrer</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HANDOFF (mode équipes) ============ -->
+<section id="handoff" class="screen">
+  <div class="wrap">
+    <div class="hero">
+      <div class="roundtag" id="hRound"></div>
+      <div class="hteam" id="hTeam"></div>
+      <div class="hname" id="hName"></div>
+      <p class="hhint" id="hHint"></p>
+      <div class="hcat" id="hCat"></div>
+    </div>
+    <div class="board" id="hBoard"></div>
+    <div class="row" style="margin-top:14px">
+      <button class="btn ghost" id="hQuit">Quitter</button>
+      <button class="btn" id="hGo">Prêt !</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ READY ============ -->
+<section id="ready" class="screen">
+  <div>
+    <div class="catname" id="rCat"></div>
+    <div class="big" id="rTitle">Mets le téléphone sur ton front</div>
+    <div class="count" id="rCount"></div>
+    <div class="hint" id="rHint">Écran tourné vers tes amis.</div>
+    <div class="legend" id="rLegend"></div>
+  </div>
+</section>
+
+<!-- ============ PLAY ============ -->
+<section id="play" class="screen">
+  <button class="quit" id="quit" aria-label="Quitter">✕</button>
+  <div class="timer" id="timer">60</div>
+  <div class="score" id="liveScore">0</div>
+  <div class="tapzone l" id="tapL"></div>
+  <div class="tapzone r" id="tapR"></div>
+  <div class="center">
+    <div id="word"></div>
+    <div id="feedback"></div>
+  </div>
+  <div class="sensorwarn" id="sensorWarn">Capteur indisponible : touche à droite pour valider, à gauche pour passer.</div>
+  <div class="taps" id="tapsHint"><span>◀ passer</span><span>valider ▶</span></div>
+  <div class="progress" id="prog"></div>
+</section>
+
+<!-- ============ END (fin de manche / de tour) ============ -->
+<section id="end" class="screen">
+  <div class="wrap">
+    <div class="endhead">
+      <div class="l" id="eCat"></div>
+      <div class="n" id="eScore">0</div>
+      <div class="l" id="eLabel">mots trouvés</div>
+    </div>
+    <div class="board" id="eBoard"></div>
+    <ul class="res" id="eList"></ul>
+    <div class="row" id="eBtns"></div>
+  </div>
+</section>
+
+<!-- ============ FINAL (mode équipes) ============ -->
+<section id="final" class="screen">
+  <div class="wrap">
+    <div class="endhead">
+      <div class="l">Fin de la partie</div>
+      <div class="n t" id="fTitle"></div>
+    </div>
+    <div class="board" id="fBoard"></div>
+    <div class="row" style="margin-top:20px">
+      <button class="btn ghost" id="fMenu">Menu</button>
+      <button class="btn" id="fReplay">Rejouer</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MODALS ============ -->
+<div class="modal" id="modalAdult">
+  <div class="box">
+    <h3>🔞 Réservé aux adultes</h3>
+    <p>Ces thèmes contiennent des références sexuelles et alcoolisées, pour des adultes consentants. Confirmes-tu avoir 18 ans ou plus ?</p>
+    <div class="row"><button class="btn ghost" id="adultNo">Non</button><button class="btn" id="adultYes" style="background:var(--adult);color:#fff">J'ai 18 ans +</button></div>
+  </div>
+</div>
+<div class="modal" id="modalShare">
+  <div class="box">
+    <h3>📲 Partager le jeu</h3>
+    <p style="margin-bottom:12px">Fais scanner ce QR code : le jeu s'ouvre dans le navigateur, rien à installer. Ensuite « Ajouter à l'écran d'accueil » pour l'avoir comme une appli.</p>
+    <canvas id="qrCanvas" width="300" height="300"></canvas>
+    <div class="qrmsg" id="qrMsg"></div>
+    <input type="text" id="shareUrl" inputmode="url" autocapitalize="off" autocomplete="off" spellcheck="false" placeholder="https://…">
+    <small class="qrsmall">Adresse du jeu (modifiable si tu l'as hébergé ailleurs)</small>
+    <div class="row" style="margin-top:12px"><button class="btn ghost small" id="qrCopy" style="flex:1">Copier le lien</button><button class="btn ghost small" id="qrSave" style="flex:1">Enregistrer le QR</button></div>
+    <button class="btn" id="qrClose" style="margin-top:10px">Fermer</button>
+    <div class="foot" style="margin:14px 0 0">Made by <a href="https://github.com/funappi" target="_blank" rel="noopener">funappi</a></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* QRCode for JavaScript - (c) 2009 Kazuhiko Arase - MIT license - http://www.d-project.com/ */
+(function(){var __m={};function require(p){return __m[p.split("/").pop()]}
+__m["QRMode"]=(function(){var module={exports:{}};var exports=module.exports;
+module.exports = {
+    MODE_NUMBER :       1 << 0,
+    MODE_ALPHA_NUM :    1 << 1,
+    MODE_8BIT_BYTE :    1 << 2,
+    MODE_KANJI :        1 << 3
+};
+
+return module.exports})();
+__m["QRErrorCorrectLevel"]=(function(){var module={exports:{}};var exports=module.exports;
+module.exports = {
+	L : 1,
+	M : 0,
+	Q : 3,
+	H : 2
+};
+
+
+return module.exports})();
+__m["QRMaskPattern"]=(function(){var module={exports:{}};var exports=module.exports;
+module.exports = {
+	PATTERN000 : 0,
+	PATTERN001 : 1,
+	PATTERN010 : 2,
+	PATTERN011 : 3,
+	PATTERN100 : 4,
+	PATTERN101 : 5,
+	PATTERN110 : 6,
+	PATTERN111 : 7
+};
+
+return module.exports})();
+__m["QRMath"]=(function(){var module={exports:{}};var exports=module.exports;
+var QRMath = {
+
+	glog : function(n) {
+	
+		if (n < 1) {
+			throw new Error("glog(" + n + ")");
+		}
+		
+		return QRMath.LOG_TABLE[n];
+	},
+	
+	gexp : function(n) {
+	
+		while (n < 0) {
+			n += 255;
+		}
+	
+		while (n >= 256) {
+			n -= 255;
+		}
+	
+		return QRMath.EXP_TABLE[n];
+	},
+	
+	EXP_TABLE : new Array(256),
+	
+	LOG_TABLE : new Array(256)
+
+};
+	
+for (var i = 0; i < 8; i++) {
+	QRMath.EXP_TABLE[i] = 1 << i;
+}
+for (var i = 8; i < 256; i++) {
+	QRMath.EXP_TABLE[i] = QRMath.EXP_TABLE[i - 4]
+		^ QRMath.EXP_TABLE[i - 5]
+		^ QRMath.EXP_TABLE[i - 6]
+		^ QRMath.EXP_TABLE[i - 8];
+}
+for (var i = 0; i < 255; i++) {
+	QRMath.LOG_TABLE[QRMath.EXP_TABLE[i] ] = i;
+}
+
+module.exports = QRMath;
+
+return module.exports})();
+__m["QRPolynomial"]=(function(){var module={exports:{}};var exports=module.exports;
+var QRMath = require('./QRMath');
+
+function QRPolynomial(num, shift) {
+	if (num.length === undefined) {
+		throw new Error(num.length + "/" + shift);
+	}
+
+	var offset = 0;
+
+	while (offset < num.length && num[offset] === 0) {
+		offset++;
+	}
+
+	this.num = new Array(num.length - offset + shift);
+	for (var i = 0; i < num.length - offset; i++) {
+		this.num[i] = num[i + offset];
+	}
+}
+
+QRPolynomial.prototype = {
+
+	get : function(index) {
+		return this.num[index];
+	},
+	
+	getLength : function() {
+		return this.num.length;
+	},
+	
+	multiply : function(e) {
+	
+		var num = new Array(this.getLength() + e.getLength() - 1);
+	
+		for (var i = 0; i < this.getLength(); i++) {
+			for (var j = 0; j < e.getLength(); j++) {
+				num[i + j] ^= QRMath.gexp(QRMath.glog(this.get(i) ) + QRMath.glog(e.get(j) ) );
+			}
+		}
+	
+		return new QRPolynomial(num, 0);
+	},
+	
+	mod : function(e) {
+	
+		if (this.getLength() - e.getLength() < 0) {
+			return this;
+		}
+	
+		var ratio = QRMath.glog(this.get(0) ) - QRMath.glog(e.get(0) );
+	
+		var num = new Array(this.getLength() );
+		
+		for (var i = 0; i < this.getLength(); i++) {
+			num[i] = this.get(i);
+		}
+		
+		for (var x = 0; x < e.getLength(); x++) {
+			num[x] ^= QRMath.gexp(QRMath.glog(e.get(x) ) + ratio);
+		}
+	
+		// recursive call
+		return new QRPolynomial(num, 0).mod(e);
+	}
+};
+
+module.exports = QRPolynomial;
+
+return module.exports})();
+__m["QRBitBuffer"]=(function(){var module={exports:{}};var exports=module.exports;
+function QRBitBuffer() {
+	this.buffer = [];
+	this.length = 0;
+}
+
+QRBitBuffer.prototype = {
+
+	get : function(index) {
+		var bufIndex = Math.floor(index / 8);
+		return ( (this.buffer[bufIndex] >>> (7 - index % 8) ) & 1) == 1;
+	},
+	
+	put : function(num, length) {
+		for (var i = 0; i < length; i++) {
+			this.putBit( ( (num >>> (length - i - 1) ) & 1) == 1);
+		}
+	},
+	
+	getLengthInBits : function() {
+		return this.length;
+	},
+	
+	putBit : function(bit) {
+	
+		var bufIndex = Math.floor(this.length / 8);
+		if (this.buffer.length <= bufIndex) {
+			this.buffer.push(0);
+		}
+	
+		if (bit) {
+			this.buffer[bufIndex] |= (0x80 >>> (this.length % 8) );
+		}
+	
+		this.length++;
+	}
+};
+
+module.exports = QRBitBuffer;
+
+return module.exports})();
+__m["QR8bitByte"]=(function(){var module={exports:{}};var exports=module.exports;
+var QRMode = require('./QRMode');
+
+function QR8bitByte(data) {
+	this.mode = QRMode.MODE_8BIT_BYTE;
+	this.data = data;
+}
+
+QR8bitByte.prototype = {
+
+	getLength : function() {
+		return this.data.length;
+	},
+	
+	write : function(buffer) {
+		for (var i = 0; i < this.data.length; i++) {
+			// not JIS ...
+			buffer.put(this.data.charCodeAt(i), 8);
+		}
+	}
+};
+
+module.exports = QR8bitByte;
+
+return module.exports})();
+__m["QRRSBlock"]=(function(){var module={exports:{}};var exports=module.exports;
+var QRErrorCorrectLevel = require('./QRErrorCorrectLevel');
+
+function QRRSBlock(totalCount, dataCount) {
+	this.totalCount = totalCount;
+	this.dataCount  = dataCount;
+}
+
+QRRSBlock.RS_BLOCK_TABLE = [
+
+	// L
+	// M
+	// Q
+	// H
+
+	// 1
+	[1, 26, 19],
+	[1, 26, 16],
+	[1, 26, 13],
+	[1, 26, 9],
+	
+	// 2
+	[1, 44, 34],
+	[1, 44, 28],
+	[1, 44, 22],
+	[1, 44, 16],
+
+	// 3
+	[1, 70, 55],
+	[1, 70, 44],
+	[2, 35, 17],
+	[2, 35, 13],
+
+	// 4		
+	[1, 100, 80],
+	[2, 50, 32],
+	[2, 50, 24],
+	[4, 25, 9],
+	
+	// 5
+	[1, 134, 108],
+	[2, 67, 43],
+	[2, 33, 15, 2, 34, 16],
+	[2, 33, 11, 2, 34, 12],
+	
+	// 6
+	[2, 86, 68],
+	[4, 43, 27],
+	[4, 43, 19],
+	[4, 43, 15],
+	
+	// 7		
+	[2, 98, 78],
+	[4, 49, 31],
+	[2, 32, 14, 4, 33, 15],
+	[4, 39, 13, 1, 40, 14],
+	
+	// 8
+	[2, 121, 97],
+	[2, 60, 38, 2, 61, 39],
+	[4, 40, 18, 2, 41, 19],
+	[4, 40, 14, 2, 41, 15],
+	
+	// 9
+	[2, 146, 116],
+	[3, 58, 36, 2, 59, 37],
+	[4, 36, 16, 4, 37, 17],
+	[4, 36, 12, 4, 37, 13],
+	
+	// 10		
+	[2, 86, 68, 2, 87, 69],
+	[4, 69, 43, 1, 70, 44],
+	[6, 43, 19, 2, 44, 20],
+	[6, 43, 15, 2, 44, 16],
+
+	// 11
+	[4, 101, 81],
+	[1, 80, 50, 4, 81, 51],
+	[4, 50, 22, 4, 51, 23],
+	[3, 36, 12, 8, 37, 13],
+
+	// 12
+	[2, 116, 92, 2, 117, 93],
+	[6, 58, 36, 2, 59, 37],
+	[4, 46, 20, 6, 47, 21],
+	[7, 42, 14, 4, 43, 15],
+
+	// 13
+	[4, 133, 107],
+	[8, 59, 37, 1, 60, 38],
+	[8, 44, 20, 4, 45, 21],
+	[12, 33, 11, 4, 34, 12],
+
+	// 14
+	[3, 145, 115, 1, 146, 116],
+	[4, 64, 40, 5, 65, 41],
+	[11, 36, 16, 5, 37, 17],
+	[11, 36, 12, 5, 37, 13],
+
+	// 15
+	[5, 109, 87, 1, 110, 88],
+	[5, 65, 41, 5, 66, 42],
+	[5, 54, 24, 7, 55, 25],
+	[11, 36, 12],
+
+	// 16
+	[5, 122, 98, 1, 123, 99],
+	[7, 73, 45, 3, 74, 46],
+	[15, 43, 19, 2, 44, 20],
+	[3, 45, 15, 13, 46, 16],
+
+	// 17
+	[1, 135, 107, 5, 136, 108],
+	[10, 74, 46, 1, 75, 47],
+	[1, 50, 22, 15, 51, 23],
+	[2, 42, 14, 17, 43, 15],
+
+	// 18
+	[5, 150, 120, 1, 151, 121],
+	[9, 69, 43, 4, 70, 44],
+	[17, 50, 22, 1, 51, 23],
+	[2, 42, 14, 19, 43, 15],
+
+	// 19
+	[3, 141, 113, 4, 142, 114],
+	[3, 70, 44, 11, 71, 45],
+	[17, 47, 21, 4, 48, 22],
+	[9, 39, 13, 16, 40, 14],
+
+	// 20
+	[3, 135, 107, 5, 136, 108],
+	[3, 67, 41, 13, 68, 42],
+	[15, 54, 24, 5, 55, 25],
+	[15, 43, 15, 10, 44, 16],
+
+	// 21
+	[4, 144, 116, 4, 145, 117],
+	[17, 68, 42],
+	[17, 50, 22, 6, 51, 23],
+	[19, 46, 16, 6, 47, 17],
+
+	// 22
+	[2, 139, 111, 7, 140, 112],
+	[17, 74, 46],
+	[7, 54, 24, 16, 55, 25],
+	[34, 37, 13],
+
+	// 23
+	[4, 151, 121, 5, 152, 122],
+	[4, 75, 47, 14, 76, 48],
+	[11, 54, 24, 14, 55, 25],
+	[16, 45, 15, 14, 46, 16],
+
+	// 24
+	[6, 147, 117, 4, 148, 118],
+	[6, 73, 45, 14, 74, 46],
+	[11, 54, 24, 16, 55, 25],
+	[30, 46, 16, 2, 47, 17],
+
+	// 25
+	[8, 132, 106, 4, 133, 107],
+	[8, 75, 47, 13, 76, 48],
+	[7, 54, 24, 22, 55, 25],
+	[22, 45, 15, 13, 46, 16],
+
+	// 26
+	[10, 142, 114, 2, 143, 115],
+	[19, 74, 46, 4, 75, 47],
+	[28, 50, 22, 6, 51, 23],
+	[33, 46, 16, 4, 47, 17],
+
+	// 27
+	[8, 152, 122, 4, 153, 123],
+	[22, 73, 45, 3, 74, 46],
+	[8, 53, 23, 26, 54, 24],
+	[12, 45, 15, 28, 46, 16],
+
+	// 28
+	[3, 147, 117, 10, 148, 118],
+	[3, 73, 45, 23, 74, 46],
+	[4, 54, 24, 31, 55, 25],
+	[11, 45, 15, 31, 46, 16],
+
+	// 29
+	[7, 146, 116, 7, 147, 117],
+	[21, 73, 45, 7, 74, 46],
+	[1, 53, 23, 37, 54, 24],
+	[19, 45, 15, 26, 46, 16],
+
+	// 30
+	[5, 145, 115, 10, 146, 116],
+	[19, 75, 47, 10, 76, 48],
+	[15, 54, 24, 25, 55, 25],
+	[23, 45, 15, 25, 46, 16],
+
+	// 31
+	[13, 145, 115, 3, 146, 116],
+	[2, 74, 46, 29, 75, 47],
+	[42, 54, 24, 1, 55, 25],
+	[23, 45, 15, 28, 46, 16],
+
+	// 32
+	[17, 145, 115],
+	[10, 74, 46, 23, 75, 47],
+	[10, 54, 24, 35, 55, 25],
+	[19, 45, 15, 35, 46, 16],
+
+	// 33
+	[17, 145, 115, 1, 146, 116],
+	[14, 74, 46, 21, 75, 47],
+	[29, 54, 24, 19, 55, 25],
+	[11, 45, 15, 46, 46, 16],
+
+	// 34
+	[13, 145, 115, 6, 146, 116],
+	[14, 74, 46, 23, 75, 47],
+	[44, 54, 24, 7, 55, 25],
+	[59, 46, 16, 1, 47, 17],
+
+	// 35
+	[12, 151, 121, 7, 152, 122],
+	[12, 75, 47, 26, 76, 48],
+	[39, 54, 24, 14, 55, 25],
+	[22, 45, 15, 41, 46, 16],
+
+	// 36
+	[6, 151, 121, 14, 152, 122],
+	[6, 75, 47, 34, 76, 48],
+	[46, 54, 24, 10, 55, 25],
+	[2, 45, 15, 64, 46, 16],
+
+	// 37
+	[17, 152, 122, 4, 153, 123],
+	[29, 74, 46, 14, 75, 47],
+	[49, 54, 24, 10, 55, 25],
+	[24, 45, 15, 46, 46, 16],
+
+	// 38
+	[4, 152, 122, 18, 153, 123],
+	[13, 74, 46, 32, 75, 47],
+	[48, 54, 24, 14, 55, 25],
+	[42, 45, 15, 32, 46, 16],
+
+	// 39
+	[20, 147, 117, 4, 148, 118],
+	[40, 75, 47, 7, 76, 48],
+	[43, 54, 24, 22, 55, 25],
+	[10, 45, 15, 67, 46, 16],
+
+	// 40
+	[19, 148, 118, 6, 149, 119],
+	[18, 75, 47, 31, 76, 48],
+	[34, 54, 24, 34, 55, 25],
+	[20, 45, 15, 61, 46, 16]
+];
+
+QRRSBlock.getRSBlocks = function(typeNumber, errorCorrectLevel) {
+	
+	var rsBlock = QRRSBlock.getRsBlockTable(typeNumber, errorCorrectLevel);
+	
+	if (rsBlock === undefined) {
+		throw new Error("bad rs block @ typeNumber:" + typeNumber + "/errorCorrectLevel:" + errorCorrectLevel);
+	}
+
+	var length = rsBlock.length / 3;
+	
+	var list = [];
+	
+	for (var i = 0; i < length; i++) {
+
+		var count = rsBlock[i * 3 + 0];
+		var totalCount = rsBlock[i * 3 + 1];
+		var dataCount  = rsBlock[i * 3 + 2];
+
+		for (var j = 0; j < count; j++) {
+			list.push(new QRRSBlock(totalCount, dataCount) );	
+		}
+	}
+	
+	return list;
+};
+
+QRRSBlock.getRsBlockTable = function(typeNumber, errorCorrectLevel) {
+
+	switch(errorCorrectLevel) {
+	case QRErrorCorrectLevel.L :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 0];
+	case QRErrorCorrectLevel.M :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 1];
+	case QRErrorCorrectLevel.Q :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 2];
+	case QRErrorCorrectLevel.H :
+		return QRRSBlock.RS_BLOCK_TABLE[(typeNumber - 1) * 4 + 3];
+	default :
+		return undefined;
+	}
+};
+
+module.exports = QRRSBlock;
+
+return module.exports})();
+__m["QRUtil"]=(function(){var module={exports:{}};var exports=module.exports;
+var QRMode = require('./QRMode');
+var QRPolynomial = require('./QRPolynomial');
+var QRMath = require('./QRMath');
+var QRMaskPattern = require('./QRMaskPattern');
+
+var QRUtil = {
+
+    PATTERN_POSITION_TABLE : [
+        [],
+        [6, 18],
+        [6, 22],
+        [6, 26],
+        [6, 30],
+        [6, 34],
+        [6, 22, 38],
+        [6, 24, 42],
+        [6, 26, 46],
+        [6, 28, 50],
+        [6, 30, 54],        
+        [6, 32, 58],
+        [6, 34, 62],
+        [6, 26, 46, 66],
+        [6, 26, 48, 70],
+        [6, 26, 50, 74],
+        [6, 30, 54, 78],
+        [6, 30, 56, 82],
+        [6, 30, 58, 86],
+        [6, 34, 62, 90],
+        [6, 28, 50, 72, 94],
+        [6, 26, 50, 74, 98],
+        [6, 30, 54, 78, 102],
+        [6, 28, 54, 80, 106],
+        [6, 32, 58, 84, 110],
+        [6, 30, 58, 86, 114],
+        [6, 34, 62, 90, 118],
+        [6, 26, 50, 74, 98, 122],
+        [6, 30, 54, 78, 102, 126],
+        [6, 26, 52, 78, 104, 130],
+        [6, 30, 56, 82, 108, 134],
+        [6, 34, 60, 86, 112, 138],
+        [6, 30, 58, 86, 114, 142],
+        [6, 34, 62, 90, 118, 146],
+        [6, 30, 54, 78, 102, 126, 150],
+        [6, 24, 50, 76, 102, 128, 154],
+        [6, 28, 54, 80, 106, 132, 158],
+        [6, 32, 58, 84, 110, 136, 162],
+        [6, 26, 54, 82, 110, 138, 166],
+        [6, 30, 58, 86, 114, 142, 170]
+    ],
+
+    G15 : (1 << 10) | (1 << 8) | (1 << 5) | (1 << 4) | (1 << 2) | (1 << 1) | (1 << 0),
+    G18 : (1 << 12) | (1 << 11) | (1 << 10) | (1 << 9) | (1 << 8) | (1 << 5) | (1 << 2) | (1 << 0),
+    G15_MASK : (1 << 14) | (1 << 12) | (1 << 10)    | (1 << 4) | (1 << 1),
+
+    getBCHTypeInfo : function(data) {
+        var d = data << 10;
+        while (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G15) >= 0) {
+            d ^= (QRUtil.G15 << (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G15) ) );    
+        }
+        return ( (data << 10) | d) ^ QRUtil.G15_MASK;
+    },
+
+    getBCHTypeNumber : function(data) {
+        var d = data << 12;
+        while (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G18) >= 0) {
+            d ^= (QRUtil.G18 << (QRUtil.getBCHDigit(d) - QRUtil.getBCHDigit(QRUtil.G18) ) );    
+        }
+        return (data << 12) | d;
+    },
+
+    getBCHDigit : function(data) {
+
+        var digit = 0;
+
+        while (data !== 0) {
+            digit++;
+            data >>>= 1;
+        }
+
+        return digit;
+    },
+
+    getPatternPosition : function(typeNumber) {
+        return QRUtil.PATTERN_POSITION_TABLE[typeNumber - 1];
+    },
+
+    getMask : function(maskPattern, i, j) {
+        
+        switch (maskPattern) {
+            
+        case QRMaskPattern.PATTERN000 : return (i + j) % 2 === 0;
+        case QRMaskPattern.PATTERN001 : return i % 2 === 0;
+        case QRMaskPattern.PATTERN010 : return j % 3 === 0;
+        case QRMaskPattern.PATTERN011 : return (i + j) % 3 === 0;
+        case QRMaskPattern.PATTERN100 : return (Math.floor(i / 2) + Math.floor(j / 3) ) % 2 === 0;
+        case QRMaskPattern.PATTERN101 : return (i * j) % 2 + (i * j) % 3 === 0;
+        case QRMaskPattern.PATTERN110 : return ( (i * j) % 2 + (i * j) % 3) % 2 === 0;
+        case QRMaskPattern.PATTERN111 : return ( (i * j) % 3 + (i + j) % 2) % 2 === 0;
+
+        default :
+            throw new Error("bad maskPattern:" + maskPattern);
+        }
+    },
+
+    getErrorCorrectPolynomial : function(errorCorrectLength) {
+
+        var a = new QRPolynomial([1], 0);
+
+        for (var i = 0; i < errorCorrectLength; i++) {
+            a = a.multiply(new QRPolynomial([1, QRMath.gexp(i)], 0) );
+        }
+
+        return a;
+    },
+
+    getLengthInBits : function(mode, type) {
+
+        if (1 <= type && type < 10) {
+
+            // 1 - 9
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 10;
+            case QRMode.MODE_ALPHA_NUM  : return 9;
+            case QRMode.MODE_8BIT_BYTE  : return 8;
+            case QRMode.MODE_KANJI      : return 8;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else if (type < 27) {
+
+            // 10 - 26
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 12;
+            case QRMode.MODE_ALPHA_NUM  : return 11;
+            case QRMode.MODE_8BIT_BYTE  : return 16;
+            case QRMode.MODE_KANJI      : return 10;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else if (type < 41) {
+
+            // 27 - 40
+
+            switch(mode) {
+            case QRMode.MODE_NUMBER     : return 14;
+            case QRMode.MODE_ALPHA_NUM  : return 13;
+            case QRMode.MODE_8BIT_BYTE  : return 16;
+            case QRMode.MODE_KANJI      : return 12;
+            default :
+                throw new Error("mode:" + mode);
+            }
+
+        } else {
+            throw new Error("type:" + type);
+        }
+    },
+
+    getLostPoint : function(qrCode) {
+        
+        var moduleCount = qrCode.getModuleCount();
+        var lostPoint = 0;
+        var row = 0; 
+        var col = 0;
+
+        
+        // LEVEL1
+        
+        for (row = 0; row < moduleCount; row++) {
+
+            for (col = 0; col < moduleCount; col++) {
+
+                var sameCount = 0;
+                var dark = qrCode.isDark(row, col);
+
+                for (var r = -1; r <= 1; r++) {
+
+                    if (row + r < 0 || moduleCount <= row + r) {
+                        continue;
+                    }
+
+                    for (var c = -1; c <= 1; c++) {
+
+                        if (col + c < 0 || moduleCount <= col + c) {
+                            continue;
+                        }
+
+                        if (r === 0 && c === 0) {
+                            continue;
+                        }
+
+                        if (dark === qrCode.isDark(row + r, col + c) ) {
+                            sameCount++;
+                        }
+                    }
+                }
+
+                if (sameCount > 5) {
+                    lostPoint += (3 + sameCount - 5);
+                }
+            }
+        }
+
+        // LEVEL2
+
+        for (row = 0; row < moduleCount - 1; row++) {
+            for (col = 0; col < moduleCount - 1; col++) {
+                var count = 0;
+                if (qrCode.isDark(row,     col    ) ) count++;
+                if (qrCode.isDark(row + 1, col    ) ) count++;
+                if (qrCode.isDark(row,     col + 1) ) count++;
+                if (qrCode.isDark(row + 1, col + 1) ) count++;
+                if (count === 0 || count === 4) {
+                    lostPoint += 3;
+                }
+            }
+        }
+
+        // LEVEL3
+
+        for (row = 0; row < moduleCount; row++) {
+            for (col = 0; col < moduleCount - 6; col++) {
+                if (qrCode.isDark(row, col) && 
+                        !qrCode.isDark(row, col + 1) && 
+                         qrCode.isDark(row, col + 2) && 
+                         qrCode.isDark(row, col + 3) && 
+                         qrCode.isDark(row, col + 4) && 
+                        !qrCode.isDark(row, col + 5) && 
+                         qrCode.isDark(row, col + 6) ) {
+                    lostPoint += 40;
+                }
+            }
+        }
+
+        for (col = 0; col < moduleCount; col++) {
+            for (row = 0; row < moduleCount - 6; row++) {
+                if (qrCode.isDark(row, col) &&
+                        !qrCode.isDark(row + 1, col) &&
+                         qrCode.isDark(row + 2, col) &&
+                         qrCode.isDark(row + 3, col) &&
+                         qrCode.isDark(row + 4, col) &&
+                        !qrCode.isDark(row + 5, col) &&
+                         qrCode.isDark(row + 6, col) ) {
+                    lostPoint += 40;
+                }
+            }
+        }
+
+        // LEVEL4
+        
+        var darkCount = 0;
+
+        for (col = 0; col < moduleCount; col++) {
+            for (row = 0; row < moduleCount; row++) {
+                if (qrCode.isDark(row, col) ) {
+                    darkCount++;
+                }
+            }
+        }
+        
+        var ratio = Math.abs(100 * darkCount / moduleCount / moduleCount - 50) / 5;
+        lostPoint += ratio * 10;
+
+        return lostPoint;       
+    }
+
+};
+
+module.exports = QRUtil;
+
+return module.exports})();
+__m["index"]=(function(){var module={exports:{}};var exports=module.exports;
+//---------------------------------------------------------------------
+// QRCode for JavaScript
+//
+// Copyright (c) 2009 Kazuhiko Arase
+//
+// URL: http://www.d-project.com/
+//
+// Licensed under the MIT license:
+//   http://www.opensource.org/licenses/mit-license.php
+//
+// The word "QR Code" is registered trademark of 
+// DENSO WAVE INCORPORATED
+//   http://www.denso-wave.com/qrcode/faqpatent-e.html
+//
+//---------------------------------------------------------------------
+// Modified to work in node for this project (and some refactoring)
+//---------------------------------------------------------------------
+
+var QR8bitByte = require('./QR8bitByte');
+var QRUtil = require('./QRUtil');
+var QRPolynomial = require('./QRPolynomial');
+var QRRSBlock = require('./QRRSBlock');
+var QRBitBuffer = require('./QRBitBuffer');
+
+function QRCode(typeNumber, errorCorrectLevel) {
+	this.typeNumber = typeNumber;
+	this.errorCorrectLevel = errorCorrectLevel;
+	this.modules = null;
+	this.moduleCount = 0;
+	this.dataCache = null;
+	this.dataList = [];
+}
+
+QRCode.prototype = {
+	
+	addData : function(data) {
+		var newData = new QR8bitByte(data);
+		this.dataList.push(newData);
+		this.dataCache = null;
+	},
+	
+	isDark : function(row, col) {
+		if (row < 0 || this.moduleCount <= row || col < 0 || this.moduleCount <= col) {
+			throw new Error(row + "," + col);
+		}
+		return this.modules[row][col];
+	},
+
+	getModuleCount : function() {
+		return this.moduleCount;
+	},
+	
+	make : function() {
+		// Calculate automatically typeNumber if provided is < 1
+		if (this.typeNumber < 1 ){
+			var typeNumber = 1;
+			for (typeNumber = 1; typeNumber < 40; typeNumber++) {
+				var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, this.errorCorrectLevel);
+
+				var buffer = new QRBitBuffer();
+				var totalDataCount = 0;
+				for (var i = 0; i < rsBlocks.length; i++) {
+					totalDataCount += rsBlocks[i].dataCount;
+				}
+
+				for (var x = 0; x < this.dataList.length; x++) {
+					var data = this.dataList[x];
+					buffer.put(data.mode, 4);
+					buffer.put(data.getLength(), QRUtil.getLengthInBits(data.mode, typeNumber) );
+					data.write(buffer);
+				}
+				if (buffer.getLengthInBits() <= totalDataCount * 8)
+					break;
+			}
+			this.typeNumber = typeNumber;
+		}
+		this.makeImpl(false, this.getBestMaskPattern() );
+	},
+	
+	makeImpl : function(test, maskPattern) {
+		
+		this.moduleCount = this.typeNumber * 4 + 17;
+		this.modules = new Array(this.moduleCount);
+		
+		for (var row = 0; row < this.moduleCount; row++) {
+			
+			this.modules[row] = new Array(this.moduleCount);
+			
+			for (var col = 0; col < this.moduleCount; col++) {
+				this.modules[row][col] = null;//(col + row) % 3;
+			}
+		}
+	
+		this.setupPositionProbePattern(0, 0);
+		this.setupPositionProbePattern(this.moduleCount - 7, 0);
+		this.setupPositionProbePattern(0, this.moduleCount - 7);
+		this.setupPositionAdjustPattern();
+		this.setupTimingPattern();
+		this.setupTypeInfo(test, maskPattern);
+		
+		if (this.typeNumber >= 7) {
+			this.setupTypeNumber(test);
+		}
+	
+		if (this.dataCache === null) {
+			this.dataCache = QRCode.createData(this.typeNumber, this.errorCorrectLevel, this.dataList);
+		}
+	
+		this.mapData(this.dataCache, maskPattern);
+	},
+
+	setupPositionProbePattern : function(row, col)  {
+		
+		for (var r = -1; r <= 7; r++) {
+			
+			if (row + r <= -1 || this.moduleCount <= row + r) continue;
+			
+			for (var c = -1; c <= 7; c++) {
+				
+				if (col + c <= -1 || this.moduleCount <= col + c) continue;
+				
+				if ( (0 <= r && r <= 6 && (c === 0 || c === 6) ) || 
+                     (0 <= c && c <= 6 && (r === 0 || r === 6) ) || 
+                     (2 <= r && r <= 4 && 2 <= c && c <= 4) ) {
+					this.modules[row + r][col + c] = true;
+				} else {
+					this.modules[row + r][col + c] = false;
+				}
+			}		
+		}		
+	},
+	
+	getBestMaskPattern : function() {
+	
+		var minLostPoint = 0;
+		var pattern = 0;
+	
+		for (var i = 0; i < 8; i++) {
+			
+			this.makeImpl(true, i);
+	
+			var lostPoint = QRUtil.getLostPoint(this);
+	
+			if (i === 0 || minLostPoint >  lostPoint) {
+				minLostPoint = lostPoint;
+				pattern = i;
+			}
+		}
+	
+		return pattern;
+	},
+	
+	createMovieClip : function(target_mc, instance_name, depth) {
+	
+		var qr_mc = target_mc.createEmptyMovieClip(instance_name, depth);
+		var cs = 1;
+	
+		this.make();
+
+		for (var row = 0; row < this.modules.length; row++) {
+			
+			var y = row * cs;
+			
+			for (var col = 0; col < this.modules[row].length; col++) {
+	
+				var x = col * cs;
+				var dark = this.modules[row][col];
+			
+				if (dark) {
+					qr_mc.beginFill(0, 100);
+					qr_mc.moveTo(x, y);
+					qr_mc.lineTo(x + cs, y);
+					qr_mc.lineTo(x + cs, y + cs);
+					qr_mc.lineTo(x, y + cs);
+					qr_mc.endFill();
+				}
+			}
+		}
+		
+		return qr_mc;
+	},
+
+	setupTimingPattern : function() {
+		
+		for (var r = 8; r < this.moduleCount - 8; r++) {
+			if (this.modules[r][6] !== null) {
+				continue;
+			}
+			this.modules[r][6] = (r % 2 === 0);
+		}
+	
+		for (var c = 8; c < this.moduleCount - 8; c++) {
+			if (this.modules[6][c] !== null) {
+				continue;
+			}
+			this.modules[6][c] = (c % 2 === 0);
+		}
+	},
+	
+	setupPositionAdjustPattern : function() {
+	
+		var pos = QRUtil.getPatternPosition(this.typeNumber);
+		
+		for (var i = 0; i < pos.length; i++) {
+		
+			for (var j = 0; j < pos.length; j++) {
+			
+				var row = pos[i];
+				var col = pos[j];
+				
+				if (this.modules[row][col] !== null) {
+					continue;
+				}
+				
+				for (var r = -2; r <= 2; r++) {
+				
+					for (var c = -2; c <= 2; c++) {
+					
+						if (Math.abs(r) === 2 || 
+                            Math.abs(c) === 2 ||
+                            (r === 0 && c === 0) ) {
+							this.modules[row + r][col + c] = true;
+						} else {
+							this.modules[row + r][col + c] = false;
+						}
+					}
+				}
+			}
+		}
+	},
+	
+	setupTypeNumber : function(test) {
+	
+		var bits = QRUtil.getBCHTypeNumber(this.typeNumber);
+        var mod;
+	
+		for (var i = 0; i < 18; i++) {
+			mod = (!test && ( (bits >> i) & 1) === 1);
+			this.modules[Math.floor(i / 3)][i % 3 + this.moduleCount - 8 - 3] = mod;
+		}
+	
+		for (var x = 0; x < 18; x++) {
+			mod = (!test && ( (bits >> x) & 1) === 1);
+			this.modules[x % 3 + this.moduleCount - 8 - 3][Math.floor(x / 3)] = mod;
+		}
+	},
+	
+	setupTypeInfo : function(test, maskPattern) {
+	
+		var data = (this.errorCorrectLevel << 3) | maskPattern;
+		var bits = QRUtil.getBCHTypeInfo(data);
+        var mod;
+	
+		// vertical		
+		for (var v = 0; v < 15; v++) {
+	
+			mod = (!test && ( (bits >> v) & 1) === 1);
+	
+			if (v < 6) {
+				this.modules[v][8] = mod;
+			} else if (v < 8) {
+				this.modules[v + 1][8] = mod;
+			} else {
+				this.modules[this.moduleCount - 15 + v][8] = mod;
+			}
+		}
+	
+		// horizontal
+		for (var h = 0; h < 15; h++) {
+	
+			mod = (!test && ( (bits >> h) & 1) === 1);
+			
+			if (h < 8) {
+				this.modules[8][this.moduleCount - h - 1] = mod;
+			} else if (h < 9) {
+				this.modules[8][15 - h - 1 + 1] = mod;
+			} else {
+				this.modules[8][15 - h - 1] = mod;
+			}
+		}
+	
+		// fixed module
+		this.modules[this.moduleCount - 8][8] = (!test);
+	
+	},
+	
+	mapData : function(data, maskPattern) {
+		
+		var inc = -1;
+		var row = this.moduleCount - 1;
+		var bitIndex = 7;
+		var byteIndex = 0;
+		
+		for (var col = this.moduleCount - 1; col > 0; col -= 2) {
+	
+			if (col === 6) col--;
+	
+			while (true) {
+	
+				for (var c = 0; c < 2; c++) {
+					
+					if (this.modules[row][col - c] === null) {
+						
+						var dark = false;
+	
+						if (byteIndex < data.length) {
+							dark = ( ( (data[byteIndex] >>> bitIndex) & 1) === 1);
+						}
+	
+						var mask = QRUtil.getMask(maskPattern, row, col - c);
+	
+						if (mask) {
+							dark = !dark;
+						}
+						
+						this.modules[row][col - c] = dark;
+						bitIndex--;
+	
+						if (bitIndex === -1) {
+							byteIndex++;
+							bitIndex = 7;
+						}
+					}
+				}
+								
+				row += inc;
+	
+				if (row < 0 || this.moduleCount <= row) {
+					row -= inc;
+					inc = -inc;
+					break;
+				}
+			}
+		}
+		
+	}
+
+};
+
+QRCode.PAD0 = 0xEC;
+QRCode.PAD1 = 0x11;
+
+QRCode.createData = function(typeNumber, errorCorrectLevel, dataList) {
+	
+	var rsBlocks = QRRSBlock.getRSBlocks(typeNumber, errorCorrectLevel);
+	
+	var buffer = new QRBitBuffer();
+	
+	for (var i = 0; i < dataList.length; i++) {
+		var data = dataList[i];
+		buffer.put(data.mode, 4);
+		buffer.put(data.getLength(), QRUtil.getLengthInBits(data.mode, typeNumber) );
+		data.write(buffer);
+	}
+
+	// calc num max data.
+	var totalDataCount = 0;
+	for (var x = 0; x < rsBlocks.length; x++) {
+		totalDataCount += rsBlocks[x].dataCount;
+	}
+
+	if (buffer.getLengthInBits() > totalDataCount * 8) {
+		throw new Error("code length overflow. (" + 
+            buffer.getLengthInBits() + 
+            ">" +  
+            totalDataCount * 8 + 
+            ")");
+	}
+
+	// end code
+	if (buffer.getLengthInBits() + 4 <= totalDataCount * 8) {
+		buffer.put(0, 4);
+	}
+
+	// padding
+	while (buffer.getLengthInBits() % 8 !== 0) {
+		buffer.putBit(false);
+	}
+
+	// padding
+	while (true) {
+		
+		if (buffer.getLengthInBits() >= totalDataCount * 8) {
+			break;
+		}
+		buffer.put(QRCode.PAD0, 8);
+		
+		if (buffer.getLengthInBits() >= totalDataCount * 8) {
+			break;
+		}
+		buffer.put(QRCode.PAD1, 8);
+	}
+
+	return QRCode.createBytes(buffer, rsBlocks);
+};
+
+QRCode.createBytes = function(buffer, rsBlocks) {
+
+	var offset = 0;
+	
+	var maxDcCount = 0;
+	var maxEcCount = 0;
+	
+	var dcdata = new Array(rsBlocks.length);
+	var ecdata = new Array(rsBlocks.length);
+	
+	for (var r = 0; r < rsBlocks.length; r++) {
+
+		var dcCount = rsBlocks[r].dataCount;
+		var ecCount = rsBlocks[r].totalCount - dcCount;
+
+		maxDcCount = Math.max(maxDcCount, dcCount);
+		maxEcCount = Math.max(maxEcCount, ecCount);
+		
+		dcdata[r] = new Array(dcCount);
+		
+		for (var i = 0; i < dcdata[r].length; i++) {
+			dcdata[r][i] = 0xff & buffer.buffer[i + offset];
+		}
+		offset += dcCount;
+		
+		var rsPoly = QRUtil.getErrorCorrectPolynomial(ecCount);
+		var rawPoly = new QRPolynomial(dcdata[r], rsPoly.getLength() - 1);
+
+		var modPoly = rawPoly.mod(rsPoly);
+		ecdata[r] = new Array(rsPoly.getLength() - 1);
+		for (var x = 0; x < ecdata[r].length; x++) {
+            var modIndex = x + modPoly.getLength() - ecdata[r].length;
+			ecdata[r][x] = (modIndex >= 0)? modPoly.get(modIndex) : 0;
+		}
+
+	}
+	
+	var totalCodeCount = 0;
+	for (var y = 0; y < rsBlocks.length; y++) {
+		totalCodeCount += rsBlocks[y].totalCount;
+	}
+
+	var data = new Array(totalCodeCount);
+	var index = 0;
+
+	for (var z = 0; z < maxDcCount; z++) {
+		for (var s = 0; s < rsBlocks.length; s++) {
+			if (z < dcdata[s].length) {
+				data[index++] = dcdata[s][z];
+			}
+		}
+	}
+
+	for (var xx = 0; xx < maxEcCount; xx++) {
+		for (var t = 0; t < rsBlocks.length; t++) {
+			if (xx < ecdata[t].length) {
+				data[index++] = ecdata[t][xx];
+			}
+		}
+	}
+
+	return data;
+
+};
+
+module.exports = QRCode;
+
+return module.exports})();
+window.QRCodeLib=__m["index"];window.QR_ECL=__m["QRErrorCorrectLevel"];})();
+
+const CATS = [
+ /* ===================== THÈMES TOUT PUBLIC ===================== */
+ {id:'animaux',name:'Animaux',em:'🦒',c:'#16a34a',w:`Girafe|Pingouin|Kangourou|Paresseux|Hérisson|Crocodile|Flamant rose|Poulpe|Koala|Chameau|Zèbre|Hibou|Dauphin|Requin|Escargot|Ornithorynque|Panda|Lama|Raton laveur|Caméléon|Gorille|Autruche|Méduse|Castor|Chauve-souris|Hippopotame|Loup|Paon|Tortue|Écureuil|Morse|Rhinocéros|Perroquet|Taupe|Phoque|Coq|Mouton|Cochon d'Inde|Abeille|Scorpion|Éléphant|Lion|Tigre|Ours polaire|Singe|Orang-outan|Fourmilier|Tapir|Lémurien|Suricate|Hyène|Guépard|Léopard|Panthère|Lynx|Renard|Sanglier|Cerf|Chèvre|Vache|Cheval|Âne|Canard|Oie|Cygne|Pélican|Toucan|Colibri|Aigle|Vautour|Corbeau|Pie|Mouette|Cigogne|Grenouille|Salamandre|Serpent|Cobra|Lézard|Iguane|Dragon de Komodo|Baleine|Orque|Raie manta|Hippocampe|Étoile de mer|Crabe|Homard|Pieuvre|Piranha|Poisson-clown|Papillon|Coccinelle|Libellule|Moustique|Araignée|Cafard|Ver de terre|Mouche|Kiwi|Bison|Wombat|Diable de Tasmanie|Blaireau|Loutre|Lapin|Hamster|Furet|Mille-pattes|Pangolin|Narval`},
+ {id:'metiers',name:'Métiers',em:'👩‍🚒',c:'#2563eb',w:`Pompier|Boulanger|Dentiste|Astronaute|Plombier|Magicien|Chirurgien|Coiffeur|Professeur|Pilote d'avion|Policier|Vétérinaire|Facteur|Chef cuisinier|DJ|Influenceur|Agriculteur|Avocat|Photographe|Mime|Clown|Archéologue|Électricien|Serveur|Maître-nageur|Juge|Journaliste|Caissier|Danseur étoile|Bûcheron|Chauffeur de taxi|Garde du corps|Météorologue|Infirmier|Youtubeur|Sommelier|Tatoueur|Jardinier|Arbitre|Mécanicien|Boucher|Poissonnier|Fleuriste|Maçon|Peintre en bâtiment|Couvreur|Menuisier|Soudeur|Éboueur|Banquier|Comptable|Notaire|Architecte|Ingénieur|Développeur|Pharmacien|Sage-femme|Kinésithérapeute|Psychologue|Pâtissier|Barista|Barman|Cascadeur|Acteur|Sculpteur|Écrivain|Libraire|Détective|Espion|Douanier|Gendarme|Marin pêcheur|Capitaine de bateau|Contrôleur de train|Hôtesse de l'air|Éleveur|Apiculteur|Vigneron|Couturier|Coach sportif|Présentateur télé|Maquilleur|Dresseur de lions|Orthophoniste|Taxidermiste|Croque-mort|Funambule|Mineur|Bibliothécaire|Standardiste|Pizzaïolo|Chauffeur de bus|Commissaire-priseur|Ostéopathe`},
+ {id:'stars',name:'Célébrités',em:'⭐',c:'#ca8a04',w:`Zinédine Zidane|Kylian Mbappé|Omar Sy|Jamel Debbouze|Céline Dion|Johnny Hallyday|Aya Nakamura|Stromae|Angèle|Jul|Booba|Teddy Riner|Antoine Griezmann|Jean Dujardin|Marion Cotillard|Louis de Funès|Gad Elmaleh|Kev Adams|Squeezie|Cyprien|Michou|Beyoncé|Rihanna|Taylor Swift|Lionel Messi|Cristiano Ronaldo|Michael Jackson|Elon Musk|Leonardo DiCaprio|Brad Pitt|Shakira|Usain Bolt|Napoléon|Albert Einstein|Marie Curie|Charlie Chaplin|Mylène Farmer|Gims|Thomas Pesquet|Tony Parker|Dany Boon|Kad Merad|Vincent Cassel|Léa Seydoux|Jean Reno|Gérard Depardieu|Catherine Deneuve|Brigitte Bardot|Alain Delon|Jean-Paul Belmondo|Édith Piaf|Charles Aznavour|Serge Gainsbourg|Jacques Brel|David Guetta|Soprano|Orelsan|Florent Pagny|Patrick Bruel|Jean-Jacques Goldman|Julien Doré|Lady Gaga|Madonna|Elvis Presley|Eminem|Drake|Ed Sheeran|Adele|Justin Bieber|Ariana Grande|Billie Eilish|Dua Lipa|Will Smith|Tom Cruise|Jackie Chan|Arnold Schwarzenegger|Johnny Depp|Angelina Jolie|Scarlett Johansson|Margot Robbie|Marilyn Monroe|Mozart|Picasso|Léonard de Vinci|LeBron James|Rafael Nadal|Roger Federer|Lewis Hamilton|Zlatan Ibrahimović|Sébastien Loeb|Tom Holland|Zendaya|Keanu Reeves|Jim Carrey|Mister Bean|Nagui|Cyril Hanouna|Jean-Pierre Foucault`},
+ {id:'films',name:'Films',em:'🎬',c:'#dc2626',w:`Titanic|Le Roi Lion|Intouchables|Bienvenue chez les Ch'tis|Astérix Mission Cléopâtre|Le Dîner de cons|Les Visiteurs|Harry Potter|Star Wars|Jurassic Park|Retour vers le futur|La Reine des neiges|Le Seigneur des anneaux|Avatar|Matrix|Shrek|Toy Story|Amélie Poulain|Taxi|OSS 117|Les Bronzés|La Cité de la peur|Rocky|Les Dents de la mer|E.T.|Pirates des Caraïbes|Le Parrain|Inception|Gladiator|Le Cinquième Élément|Spider-Man|Batman|Mamma Mia!|Grease|Ratatouille|Le Monde de Nemo|Top Gun|Les Tuche|Barbie|Le Grand Bleu|Forrest Gump|Terminator|Rambo|Die Hard|Indiana Jones|Alien|King Kong|Godzilla|Men in Black|SOS Fantômes|Maman j'ai raté l'avion|Madame Doubtfire|Pretty Woman|Dirty Dancing|Ghost|Love Actually|Le Journal de Bridget Jones|Moulin Rouge|La La Land|Kung Fu Panda|Madagascar|L'Âge de glace|Les Indestructibles|Vice-versa|Là-haut|Coco|Mission impossible|James Bond|Fast and Furious|Le Loup de Wall Street|Pulp Fiction|Fight Club|Le Silence des agneaux|Shining|Scream|Psychose|Les Évadés|Les Choristes|Le Père Noël est une ordure|La Grande Vadrouille|Le Gendarme de Saint-Tropez|La Boum|Un Indien dans la ville|Camping|Qu'est-ce qu'on a fait au bon Dieu|Rien à déclarer|La Famille Bélier|Le Prénom|Les Petits Mouchoirs|Brice de Nice|Le Corniaud|Les Tontons flingueurs|Oppenheimer|Avengers|Joker`},
+ {id:'series',name:'Séries & télé',em:'📺',c:'#7c3aed',w:`Friends|Game of Thrones|La Casa de Papel|Stranger Things|Breaking Bad|Lupin|Plus belle la vie|Kaamelott|Les Simpson|Squid Game|Dix pour cent|Grey's Anatomy|The Office|Peaky Blinders|Bref|Emily in Paris|How I Met Your Mother|Prison Break|Lost|Dr House|Malcolm|Hélène et les garçons|Sherlock|Desperate Housewives|The Walking Dead|Narcos|Mercredi|Black Mirror|Le Bureau des légendes|Camping Paradis|Joséphine ange gardien|Les Feux de l'amour|Dexter|Vikings|The Crown|La Chronique des Bridgerton|Scènes de ménages|Validé|Doctor Who|Les Anges de la téléréalité|The Mandalorian|The Last of Us|Les Experts|NCIS|Esprits criminels|Columbo|Navarro|Julie Lescaut|Les Mystères de l'amour|Sous le soleil|Loft Story|Koh-Lanta|Top Chef|MasterChef|Les Marseillais|Secret Story|The Voice|Danse avec les stars|Nouvelle Star|L'amour est dans le pré|Un dîner presque parfait|Pékin Express|Fort Boyard|Le Meilleur Pâtissier|Les 12 coups de midi|N'oubliez pas les paroles|Questions pour un champion|Qui veut gagner des millions|Intervilles|Le Juste Prix|La Roue de la fortune|Quotidien|Le Petit Journal|Les Guignols de l'info|Burger Quiz|Touche pas à mon poste|Cauchemar en cuisine|Affaire conclue|Les Reines du shopping|Le Bachelor|Love Island|Too Hot to Handle`},
+ {id:'dessins',name:'Dessins animés & mangas',em:'🧽',c:'#0891b2',w:`Pokémon|Bob l'éponge|Dragon Ball Z|One Piece|Naruto|Les Schtroumpfs|Tintin|Astérix|Lucky Luke|Oui-Oui|Peppa Pig|Tom et Jerry|Scooby-Doo|Mickey Mouse|Winnie l'ourson|Les Razmoket|Totally Spies|Code Lyoko|Il était une fois la vie|Boule et Bill|Titeuf|Inspecteur Gadget|Les Minions|Pat'Patrouille|Bluey|Miraculous|Barbapapa|Casimir|Calimero|Popeye|Les Pierrafeu|Capitaine Flam|Goldorak|Sailor Moon|Les Mystérieuses Cités d'or|Kirikou|Garfield|T'choupi|Les Tortues Ninja|Les Bisounours|Les Télétubbies|Dora l'exploratrice|Martin Mystère|Kid Paddle|Oggy et les cafards|Les Lapins crétins|Rick et Morty|South Park|Family Guy|Ulysse 31|Digimon|Yu-Gi-Oh!|Détective Conan|Death Note|L'Attaque des Titans|My Hero Academia|Demon Slayer|Mon voisin Totoro|Le Voyage de Chihiro|Princesse Mononoké|Albator|Olive et Tom|Les Chevaliers du Zodiaque|Hello Kitty|Maya l'abeille|Heidi|Rémi sans famille|Le Marsupilami|Spirou|Gaston Lagaffe|Les Dalton|Bob le bricoleur|Fifi Brindacier|Les Maîtres de l'univers|Musclor|Tex Avery|Wallace et Gromit|Shaun le mouton|Les Looney Tunes|Bip Bip et Coyote|Titi et Grosminet|Bugs Bunny|Daffy Duck|Porky Pig|Léo et Popi|Blue's Clues`},
+ {id:'chansons',name:'Chansons à fredonner',em:'🎤',c:'#db2777',w:`La Marseillaise|Joyeux anniversaire|Alexandrie Alexandra|Les Lacs du Connemara|Dernière danse|Papaoutai|Djadja|Tous les mêmes|Je veux|Allumer le feu|La Bamba|Macarena|Bohemian Rhapsody|Thriller|Despacito|Gangnam Style|Billie Jean|Libérée, délivrée|Hakuna Matata|Le Petit Bonhomme en mousse|La Danse des canards|Les Démons de minuit|Ces soirées-là|Les Champs-Élysées|La Vie en rose|Ne me quitte pas|Bella|Alors on danse|Jaloux|I Will Survive|Dancing Queen|Africa|YMCA|Happy|Shape of You|We Will Rock You|Frère Jacques|Au clair de la lune|Vive le vent|Single Ladies|Mistral gagnant|Formidable|Rolling in the Deep|Someone Like You|Uptown Funk|Bad Guy|Blinding Lights|Baby Shark|Voyage voyage|Foule sentimentale|Ça plane pour moi|L'Aigle noir|La Mer|Les Copains d'abord|Né quelque part|Le Banana Split|Il est libre Max|Livin' on a Prayer|Sweet Child o' Mine|Hotel California|Imagine|Let It Be|Yesterday|Hey Jude|Smells Like Teen Spirit|Wonderwall|Yellow|Viva la Vida|Don't Stop Believin'|Eye of the Tiger|The Final Countdown|Je ne regrette rien|Mamma Mia|Wannabe|Toxic|Baby One More Time|Like a Prayer|Girls Just Want to Have Fun|Staying Alive|Sapés comme jamais|La Chenille|Les Sardines|Mon amant de Saint-Jean|Quand on n'a que l'amour|Petit papa Noël|Mon beau sapin|All I Want for Christmas Is You`},
+ {id:'marques',name:'Marques',em:'🏷️',c:'#ea580c',w:`Nutella|Coca-Cola|IKEA|Apple|McDonald's|Nike|Lego|Kinder|Michelin|Renault|Peugeot|Carrefour|Leroy Merlin|Decathlon|Amazon|Netflix|Google|Haribo|Red Bull|Playmobil|Chanel|Louis Vuitton|Danone|Évian|Orangina|Tupperware|Post-it|Bic|Ferrari|Tesla|Starbucks|Disney|Nintendo|PlayStation|Oasis|Pringles|Uber|Instagram|TikTok|Lacoste|Adidas|Puma|Zara|H&M|Kiabi|Auchan|Lidl|Aldi|Intermarché|Leclerc|Picard|Monoprix|Fnac|Darty|Boulanger|Sephora|L'Oréal|Nivea|Dove|Colgate|Ariel|Mr Propre|Duracell|Canon|Samsung|Sony|Xiaomi|Nokia|BMW|Mercedes|Audi|Citroën|Toyota|Harley-Davidson|Rolex|Cartier|Hermès|Dior|Gucci|Lindt|Milka|Ferrero Rocher|Oreo|Bonne Maman|Nescafé|Nespresso|Lipton|Perrier|Heineken|Kronenbourg|Jack Daniel's|Kellogg's|Barilla|Lu|Carambar|Pepsi|Fanta|Sprite|Doliprane|Velux|Sodebo|Bonduelle|Pampers|Gillette|Durex|Ricard|Kronenbourg`},
+ {id:'sports',name:'Sports',em:'⚽',c:'#059669',w:`Football|Rugby|Tennis|Pétanque|Ski|Surf|Boxe|Judo|Natation|Cyclisme|Tour de France|Basket|Handball|Escalade|Golf|Curling|Patinage artistique|Équitation|Escrime|Sumo|Bowling|Ping-pong|Badminton|Saut à la perche|Marathon|Yoga|Karaté|Plongée|Parachutisme|Skateboard|Formule 1|Lancer de javelot|Haltérophilie|Water-polo|Aviron|Volley-ball|Gymnastique|Biathlon|Fléchettes|Pole dance|Hockey sur glace|Cricket|Baseball|Football américain|Course de haies|Saut en longueur|Lancer de marteau|Décathlon|Triathlon|Voile|Kitesurf|Planche à voile|Canoë-kayak|Rafting|Spéléologie|Alpinisme|Trail|Course d'orientation|Slackline|Tir à l'arc|Lutte|Taekwondo|MMA|Capoeira|Zumba|Pilates|CrossFit|Musculation|Aquagym|Trampoline|Saut à l'élastique|Deltaplane|Parapente|Ski nautique|Bobsleigh|Luge|Snowboard|Ski de fond|Saut à ski|Roller|Pelote basque|Squash|Billard|Polo|Rodéo|Bras de fer|Échecs|Course de sacs|Tir à la corde|Danse classique|Break dance|Longe-côte|Pêche|Fléchettes|Quidditch`},
+ {id:'bouffe',name:'Bouffe',em:'🍕',c:'#b45309',w:`Pizza|Raclette|Fondue|Croissant|Baguette|Couscous|Sushi|Hamburger|Crêpe|Tartiflette|Croque-monsieur|Escargots|Cuisses de grenouille|Moules-frites|Carbonade flamande|Welsh|Maroilles|Ratatouille|Bœuf bourguignon|Macaron|Éclair au chocolat|Kebab|Tacos|Spaghetti bolognaise|Lasagnes|Gaufre|Barbe à papa|Popcorn|Hot-dog|Paella|Quiche lorraine|Cassoulet|Choucroute|Camembert|Foie gras|Huîtres|Pain au chocolat|Raviolis|Glace à la vanille|Frites|Poulet rôti|Gigot d'agneau|Blanquette de veau|Pot-au-feu|Pâtes carbonara|Risotto|Tiramisu|Panna cotta|Burrito|Guacamole|Nachos|Fajitas|Falafel|Houmous|Taboulé|Tajine|Pad thaï|Ramen|Nems|Dim sum|Curry|Naan|Fish and chips|Pancakes|Donut|Cookie|Brownie|Cheesecake|Tarte Tatin|Mille-feuille|Paris-Brest|Religieuse|Profiteroles|Crème brûlée|Mousse au chocolat|Île flottante|Far breton|Clafoutis|Kouign-amann|Cannelé|Madeleine|Pain perdu|Fondant au chocolat|Salade César|Croque-madame|Hachis parmentier|Steak-frites|Steak tartare|Jambon-beurre|Soupe à l'oignon|Gratin dauphinois|Purée|Omelette|Œuf mimosa|Saucisson|Rillettes|Roquefort|Comté|Reblochon|Brie|Fraises Tagada|Churros|Nougat|Calisson`},
+ {id:'objets',name:'Objets',em:'🪥',c:'#475569',w:`Brosse à dents|Parapluie|Grille-pain|Aspirateur|Télécommande|Ventilateur|Trottinette|Lunettes de soleil|Cafetière|Sèche-cheveux|Agrafeuse|Tire-bouchon|Bougie|Réveil|Cintre|Passoire|Fer à repasser|Ballon de baudruche|Brouette|Échelle|Marteau|Ciseaux|Valise|Hamac|Masque de plongée|Micro-ondes|Tondeuse|Écharpe|Chaussette|Oreiller|Raquette|Boussole|Loupe|Clé USB|Manette|Casque audio|Perceuse|Balai|Seau|Cadenas|Ouvre-boîte|Éplucheur|Presse-ail|Fouet|Louche|Rouleau à pâtisserie|Planche à découper|Mixeur|Bouilloire|Lave-linge|Sèche-linge|Lave-vaisselle|Frigo|Congélateur|Four|Plaque de cuisson|Hotte|Lampe de poche|Ampoule|Prise électrique|Rallonge|Multiprise|Interrupteur|Tournevis|Pince|Scie|Clé à molette|Mètre ruban|Niveau à bulle|Pinceau|Rouleau de peinture|Escabeau|Tapis|Rideau|Miroir|Horloge|Cadre photo|Vase|Coussin|Plaid|Couverture|Drap|Matelas|Table de chevet|Commode|Bibliothèque|Canapé|Fauteuil|Tabouret|Porte-manteau|Poubelle|Paillasson|Sonnette|Digicode|Boîte aux lettres|Sac à dos|Portefeuille|Trousseau de clés|Briquet|Allumettes|Stylo|Crayon|Gomme|Taille-crayon|Règle|Compas|Calculatrice|Cartable|Cahier`},
+ {id:'monde',name:'Pays & villes',em:'🌍',c:'#0d9488',w:`France|Japon|Brésil|Égypte|Australie|Canada|Italie|Espagne|Mexique|Inde|Chine|Russie|Belgique|Suisse|Maroc|Sénégal|Grèce|Islande|Norvège|États-Unis|Paris|Lille|Marseille|Londres|New York|Rome|Tokyo|Venise|Las Vegas|Dubaï|Hollywood|Bruxelles|Amsterdam|Berlin|Barcelone|Le Caire|Rio de Janeiro|Sydney|Mont-Saint-Michel|Tour Eiffel|Allemagne|Portugal|Pologne|Suède|Finlande|Danemark|Irlande|Écosse|Turquie|Tunisie|Algérie|Côte d'Ivoire|Madagascar|Afrique du Sud|Kenya|Thaïlande|Vietnam|Corée du Sud|Indonésie|Nouvelle-Zélande|Argentine|Chili|Pérou|Colombie|Cuba|Jamaïque|Alaska|Hawaï|Californie|Floride|Texas|Lyon|Bordeaux|Toulouse|Nice|Strasbourg|Nantes|Rennes|Montpellier|Biarritz|Chamonix|Cannes|Saint-Tropez|La Rochelle|Marrakech|Istanbul|Athènes|Prague|Vienne|Budapest|Madrid|Lisbonne|Copenhague|Stockholm|Moscou|Pékin|Hong Kong|Singapour|Bali|Los Angeles|San Francisco|Miami|Montréal|Québec|Buenos Aires|Machu Picchu|Grand Canyon|Pyramides de Gizeh|Muraille de Chine|Taj Mahal|Colisée`},
+ {id:'mimes',name:'Mimes',em:'🤹',c:'#9333ea',w:`Se brosser les dents|Faire du vélo|Pêcher|Promener son chien|Changer une couche|Faire un selfie|Jongler|Traire une vache|Faire la vaisselle|Conduire un tracteur|Monter à cheval|Faire du surf|Jouer de la guitare|Diriger un orchestre|Faire un bonhomme de neige|Repasser une chemise|Faire le moonwalk|Faire du ski|Se maquiller|Faire des pompes|Taper au clavier|Escalader une montagne|Courir après un bus|Ouvrir une huître|Couper des oignons|Faire du karaoké|Prendre une douche|Faire le robot|Faire le poirier|Marcher sur des braises|Jouer au bowling|Éternuer|Manger des spaghettis|Faire du yoga|Se faire piquer par une abeille|Gonfler un ballon|Faire un créneau|Jouer à la console|Faire une bataille de polochons|Se coincer le doigt|Faire du hula hoop|Nager le crawl|Ramer en canoë|Planter un clou|Scier une planche|Passer l'aspirateur|Faire la cuisine|Faire sauter une crêpe|Servir du café|Se raser|Se coiffer|Danser le tango|Danser la macarena|Marcher sur la lune|Faire du patin à glace|Jouer du piano|Jouer de la batterie|Jouer du violon|Lancer un boomerang|Tirer à l'arc|Faire du trampoline|Dormir debout|Marcher dans la boue|Entrer dans une pièce sombre|Avoir très froid|Avoir très chaud|Se faire poursuivre par un ours|Faire une photo de groupe|Distribuer des cartes|Lancer une fléchette|Jouer au golf|Faire de la corde à sauter|Retenir sa respiration|Pleurer de rire|Éviter une guêpe|Monter un meuble IKEA|Changer une roue|Faire un câlin à un ours`},
+ {id:'jeuxvideo',name:'Jeux vidéo',em:'🎮',c:'#4f46e5',w:`Mario|Zelda|Pokémon|Minecraft|Fortnite|FIFA|GTA|Call of Duty|Tetris|Pac-Man|Sonic|Les Sims|League of Legends|Among Us|Animal Crossing|Mario Kart|Super Smash Bros|Candy Crush|Angry Birds|Fall Guys|Rocket League|Overwatch|Valorant|Counter-Strike|Clash Royale|Brawl Stars|Roblox|Just Dance|Street Fighter|Mortal Kombat|Tekken|Assassin's Creed|The Witcher|Red Dead Redemption|Resident Evil|Silent Hill|Halo|God of War|Uncharted|The Last of Us|Skyrim|World of Warcraft|Diablo|Kirby|Donkey Kong|Luigi|Bowser|Link|Princesse Peach|Yoshi|Pikachu|Dracaufeu|Lara Croft|Master Chief|Crash Bandicoot|Spyro|Rayman|Space Invaders|Pong|Game Boy|Nintendo Switch|PlayStation 5|Xbox|Joystick|Wii Sports|Guitar Hero|Dark Souls|Elden Ring|Stardew Valley|Cyberpunk|Fallout|Portal|Half-Life|Doom|Bomberman|Tamagotchi|Pokémon Go|Pro Evolution Soccer|Need for Speed|Gran Turismo|Forza|Flappy Bird|Subway Surfers|Temple Run|Geometry Dash|Mario Party|Splatoon|Kingdom Hearts|Final Fantasy|Metal Gear|Hades|Genshin Impact|Apex Legends|PUBG`},
+ {id:'nostalgie',name:'Nostalgie 80-90-2000',em:'📼',c:'#c2410c',w:`Minitel|Walkman|Cassette VHS|Disquette|Cabine téléphonique|Télécarte|Polaroïd|Pogs|Tazos|Beyblade|Yo-yo|Bracelet brésilien|Loom bands|Fidget spinner|MSN Messenger|Skyblog|Nokia 3310|Tamagotchi|Furby|Rubik's Cube|Super Nintendo|Club Dorothée|Les Minikeums|Intervilles|Fort Boyard|Star Academy|Loft Story|Les Guignols|Tournez manège|Cartes Pokémon|Chewing-gum Malabar|Carambar|Dragibus|Capri-Sun|Tektonik|Spice Girls|Backstreet Boys|Tokio Hotel|Eiffel 65|Minipouce|Diddl|Barbie|Polly Pocket|Lecteur CD|Discman|MP3|iPod|Appareil photo jetable|Les Télétubbies|Connexion 56k|Napster|Kazaa|eMule|Limewire|Hi5|MySpace|Habbo|Copains d'avant|Gameboy Color|Chaussures à roulettes|Jean taille basse|Mèches colorées|Gel coiffant|Collier coquillage|Chokers|Pantalon pattes d'eph|Bonnet péruvien|Ceinture à gros clou|Blackberry|Palm|Super Mario World|Hit machine|MTV|NRJ 12|M6 Music`},
+ {id:'expressions',name:'Expressions françaises',em:'💬',c:'#0369a1',w:`Avoir le cafard|Poser un lapin|Coûter les yeux de la tête|Raconter des salades|Avoir un chat dans la gorge|Tomber dans les pommes|Mettre son grain de sel|Appeler un chat un chat|Chercher midi à quatorze heures|Avoir le cœur sur la main|Casser les pieds|Être sur son trente-et-un|Être dans le pétrin|Avoir un poil dans la main|Mettre les pieds dans le plat|Avoir la tête dans les nuages|Avoir le bras long|Se jeter à l'eau|Tourner autour du pot|Passer du coq à l'âne|Faire la grasse matinée|Faire chou blanc|Pleuvoir des cordes|Être fauché comme les blés|Avoir la dalle|Avoir un nœud au ventre|Avoir les chocottes|Pédaler dans la choucroute|Tirer le diable par la queue|Dormir sur ses deux oreilles|Avoir la pêche|Avoir la banane|Ne pas être sorti de l'auberge|Revenir à ses moutons|Quand les poules auront des dents|Faire d'une pierre deux coups|Mettre de l'eau dans son vin|Noyer le poisson|Être aux anges|Être à côté de la plaque|Prendre ses jambes à son cou|Rire jaune|Rouler dans la farine|Avoir un coup de foudre|Avoir un coup de barre|Avoir un coup de pompe|Être dans les choux|Mettre la charrue avant les bœufs|Un froid de canard|Lever le coude|Avoir le melon|Se creuser la tête|Marcher sur des œufs|Casser la croûte|Avoir du pain sur la planche|Être comme cul et chemise|Un temps de chien|Être au bout du rouleau|Ne pas y aller avec le dos de la cuillère|Faire la fine bouche|Avoir un cheveu sur la langue|Se mettre la rate au court-bouillon|Gagner sa croûte|Mener quelqu'un en bateau|Être au taquet|Faire la tête|Être sur la sellette|Être mort de rire|Être crevé|Avoir les dents longues|Avoir la langue bien pendue|Garder la pêche|Vendre la mèche|Mettre les voiles`},
+ {id:'histoire',name:'Histoire & culture',em:'🏛️',c:'#78350f',w:`La Révolution française|La Bastille|Louis XIV|Versailles|Jeanne d'Arc|Charlemagne|Cléopâtre|Pyramides|Jules César|Colisée|Vikings|Christophe Colomb|Guerre de Cent Ans|Moyen Âge|Chevalier|Château fort|Galilée|Gutenberg|Mur de Berlin|Apollo 11|Marie-Antoinette|Guillotine|Louis XVI|Robespierre|Vercingétorix|Clovis|Louis Pasteur|Victor Hugo|Molière|Les Misérables|Notre-Dame de Paris|Le Petit Prince|La Joconde|Van Gogh|Monet|Dalí|Beethoven|Opéra|Musée du Louvre|Statue de la Liberté|Machu Picchu|Stonehenge|Pompéi|Mythologie grecque|Zeus|Hercule|Ulysse|Cheval de Troie|Atlantide|Pharaon|Momie|Alexandre le Grand|Gladiateur|Samouraï|Cowboy|Pirate|Les Trois Mousquetaires|Roi Arthur|Robin des Bois|Marco Polo|Tutankhamon|Homme de Cro-Magnon|Dinosaure|Big Bang|Mai 68|Coupe du monde 1998|Abbé Pierre|Charles de Gaulle|Louis Pasteur|Pierre et Marie Curie|Léonard de Vinci|Michel-Ange|Rembrandt|Shakespeare|Don Quichotte|Dracula|Frankenstein|Sherlock Holmes|Arsène Lupin|Fantômas|Le Comte de Monte-Cristo|Cyrano de Bergerac|Les Fables de La Fontaine|Le Corbeau et le Renard`},
+ {id:'web',name:'Web & réseaux',em:'📱',c:'#0ea5e9',w:`TikTok|Instagram|Snapchat|YouTube|Twitch|WhatsApp|Facebook|Discord|Netflix|Spotify|Wikipédia|Google Maps|Uber Eats|Vinted|Leboncoin|Selfie|Story|Hashtag|Like|Follower|Buzz|Mème|Emoji|GIF|Podcast|Streamer|Influenceur|Spam|Mot de passe|Wi-Fi|Bluetooth|QR code|Captcha|Cookie|Notification|Livestream|ChatGPT|Intelligence artificielle|Deepfake|Fake news|Cloud|Bug|Piratage|Message vocal|Appel vidéo|Tuto|Unboxing|Ghosting|Vu sans réponse|Batterie à 1%|Écran cassé|Chargeur|Powerbank|AirPods|Appli de rencontre|Story à 3h du matin|Doomscrolling|Capture d'écran|Mode avion|Mode sombre|Mise à jour|Abonnement|Période d'essai|Compte privé|Troll|Haters|Clash|Vlog|Challenge|Sponsorisé|Code promo|Panier abandonné|Livraison gratuite|Avis 5 étoiles|Réseau Wi-Fi public|Mot de passe oublié|Bouton Publier|Bouton Désabonner|Copier-coller|Raccourci clavier|Émoticône|Selfie de groupe|Filtre chien|Live Instagram|Tendance du jour|Viral`},
+ {id:'vacances',name:'Vacances',em:'🏖️',c:'#d97706',w:`Plage|Camping|Valise|Crème solaire|Parasol|Château de sable|Bouée|Tongs|Maillot de bain|Coup de soleil|Hôtel|Tout compris|Aéroport|Vol retardé|Passeport|Douane|Auto-stop|Péage|Embouteillage|Gîte|Caravane|Tente|Sac de couchage|Feu de camp|Randonnée|Montagne|Station de ski|Télésiège|Raclette au chalet|Croisière|Piscine|Toboggan aquatique|Mojito sur la plage|Snorkeling|Safari|Carte postale|Souvenirs|Appareil photo|Perche à selfie|GPS|Auberge de jeunesse|Airbnb|Location de voiture|Road trip|City break|Pique-nique|Glace italienne|Marché local|Guide touristique|Décalage horaire|Mal des transports|Moustiques|Bagage perdu|Valise trop lourde|Aire d'autoroute|Barbecue|Hamac|Planche de surf|Palmes et tuba|Serviette de plage|Sieste|Bronzage|Marques de maillot|Sable dans la valise|Coquillage|Feu d'artifice du 14 juillet|Fête foraine|Barbe à papa de la plage|Colonie de vacances|Mini-golf|Pédalo|Jet-ski|Banane tractée|Tour en montgolfière|Visite de musée|Photo devant un monument`},
+ {id:'nord',name:'Nord & Ch\'tis',em:'🧇',c:'#4d7c0f',w:`Ch'ti|Maroilles|Carbonade flamande|Welsh|Frites|Braderie de Lille|Beffroi|Grand'Place de Lille|Vieux-Lille|Paris-Roubaix|Vélodrome de Roubaix|La Piscine de Roubaix|Villa Cavrois|Dunkerque|Carnaval de Dunkerque|Malo-les-Bains|Le Touquet|Boulogne-sur-Mer|Calais|Lens|Louvre-Lens|RC Lens|LOSC|Stade Pierre-Mauroy|Dany Boon|Bienvenue chez les Ch'tis|Estaminet|Bière du Nord|Gaufre de Lille|Merveilleux|Tarte au sucre|Tarte au maroilles|Potjevleesch|Meert|Géants du Nord|Mont des Cats|Terril|Corons|Mines de charbon|Germinal|Cassel|Valenciennes|Cambrai|Bêtises de Cambrai|Arras|Douai|Gayant|Tourcoing|Villeneuve-d'Ascq|Euralille|Amiens|Cathédrale d'Amiens|Macarons d'Amiens|Chantilly|Côte d'Opale|Cap Blanc-Nez|Wimereux|Berck|Baie de Somme|Eurotunnel|Lille Flandres|Lille Europe|Métro de Lille|V'Lille|Vendredi de la Braderie|Moules de la Braderie|Cuberdon|Jenlain|Bière de garde|Genièvre|Chicorée|Carambar|Pain d'épices|Le Mont-de-Cats|Fête des géants|La Voix du Nord`},
+ {id:'contes',name:'Contes & Disney',em:'🏰',c:'#a855f7',w:`Cendrillon|Blanche-Neige|La Belle au bois dormant|Le Petit Chaperon rouge|Le Petit Poucet|Hansel et Gretel|Barbe bleue|Le Chat botté|Peau d'âne|Raiponce|La Petite Sirène|Aladdin|Mulan|Pocahontas|La Belle et la Bête|Simba|Nemo|Woody|Buzz l'Éclair|Elsa|Olaf|Stitch|Vaiana|Mowgli|Baloo|Dumbo|Bambi|Pinocchio|Peter Pan|La Fée Clochette|Capitaine Crochet|Alice au pays des merveilles|Le Chapelier fou|La Reine de cœur|Dingo|Donald|Minnie|Picsou|Cruella|Maléfique|Ursula|Jafar|Gaston|Scar|Le Génie|Mushu|Sébastien le crabe|Timon et Pumbaa|Sulley|Bob Razowski|WALL-E|Baymax|Shrek|Fiona|Âne|Le Gruffalo|Hercule|Tarzan|Quasimodo|Esmeralda|Rapunzel|Merida|Anna|Kristoff|Moana|Maui|Mirabel|Miguel|Joy et Tristesse|Rémy le rat|Flash McQueen|Mike Wazowski|Carl de Là-haut|Les Sept Nains|Prince charmant|Marraine la bonne fée|Citrouille et pantoufle de verre|Pomme empoisonnée|Miroir magique|Lampe magique|Tapis volant|Baguette magique|Dragon|Sorcière|Ogre|Lutin|Fée|Troll`},
+ {id:'musique',name:'Chanteurs & groupes',em:'🎸',c:'#be185d',w:`Daft Punk|Indochine|Téléphone|Noir Désir|PNL|Ninho|Damso|Orelsan|Nekfeu|Soprano|Maes|SCH|Niska|Aya Nakamura|Angèle|Clara Luciani|Vianney|Louane|Amir|Bigflo et Oli|Jain|Christine and the Queens|Yseult|Matt Pokora|Kendji Girac|Slimane|Lomepal|Gazo|Tiakola|Lacrim|Naps|Soolking|Dadju|Tayc|Shy'm|Louise Attaque|Les Rita Mitsouko|Alizée|Jenifer|Nolwenn Leroy|Patrick Fiori|Calogero|Pascal Obispo|Renaud|Francis Cabrel|Alain Bashung|Michel Polnareff|Joe Dassin|Claude François|Dalida|Sheila|Sylvie Vartan|Mireille Mathieu|Michel Delpech|Jean Ferrat|Georges Brassens|Barbara|Boris Vian|Manu Chao|IAM|NTM|Queen|The Beatles|Les Rolling Stones|AC/DC|Metallica|Nirvana|ABBA|Coldplay|U2|Oasis|Pink Floyd|Led Zeppelin|Bob Marley|Prince|David Bowie|Bee Gees|Village People|Spice Girls|Backstreet Boys|Destiny's Child|The Weeknd|Bruno Mars|Måneskin|Imagine Dragons|Linkin Park|Muse|Red Hot Chili Peppers|Fréro Delavega|Zaz|Patrick Sébastien|Les Cowboys Fringants|Les Inconnus|Les Enfoirés|Gojira|Justice|Phoenix|Air|M83|Kavinsky`},
+
+ /* ===================== THÈMES 18+ (COUPLES) ===================== */
+ {id:'coquin',adult:1,name:'Coquin',em:'🌶️',c:'#be185d',w:`Préliminaires|Kamasutra|Menottes|Lingerie|Strip-tease|Plan à trois|Préservatif|Suçon|Fantasme|Fouet|Love hotel|Nude|Sexto|Coup d'un soir|Massage érotique|Huile de massage|Porte-jarretelles|Fessée|Cinquante nuances de Grey|Libido|Orgasme|Baiser langoureux|Club libertin|Bandeau sur les yeux|Chippendales|Crème fouettée|Jacuzzi|Talons aiguilles|Sex-shop|Room service|Tenue d'Ève|Peau contre peau|Bain moussant à deux|Sous la couette|Nuit torride|Caresses|Mordiller une oreille|Pétales de rose|Champagne au lit|Bas résille|Corset|String|Nuisette|Body transparent|Déshabiller du regard|Regard de braise|Photo sexy|Pose suggestive|Torse nu|Décolleté|Tatouage intime|Rouge à lèvres|Chuchoter à l'oreille|Frisson|Chair de poule|Désir|Tension sexuelle|Voyeur|Exhibitionniste|Danse sensuelle|Soutien-gorge en dentelle|Boxer moulant|Maillot de bain minuscule|Bikini|Monokini|Nudisme|Plage naturiste|Sauna mixte|Hammam|Spa en amoureux|Nuit de noces|Lune de miel|Chambre d'hôtel|Do not disturb|Mini-bar|Peignoir|Drap en satin|Lit king size|Matelas qui grince`},
+ {id:'aulit',adult:1,name:'Sous la couette',em:'🛏️',c:'#9d174d',w:`Missionnaire|Levrette|Andromaque|La cuillère|Le 69|L'amazone|La brouette|Le lotus|Debout contre le mur|Sur la table de la cuisine|Dans la douche|Dans la voiture|Dans un ascenseur|Sur la plage la nuit|Sous les draps|Au réveil|Sexe matinal|Sexe de réconciliation|Câlin après l'amour|Fellation|Cunnilingus|Masturbation|Sexe oral|Doigté|Point G|Zone érogène|Gémissements|Cris de plaisir|Voisins qui entendent|Lit qui grince|Tête de lit qui cogne|Orgasme|Faux orgasme|Orgasme simultané|Éjaculation|Érection|Panne|Marathon sexuel|Quickie|Nuit blanche|Endurance|Reprendre son souffle|Courbature|Position impossible|Crampe|Fou rire pendant l'amour|Chute du lit|Première fois|Sieste coquine|Sexe sauvage|Sexe tendre|Sexe en vacances|Sexe en cachette|Sexe au bureau|Netflix qui dérape|Rapport protégé|Pilule|Capote qui craque|Préliminaires interminables|Câlin torride|Embrasser le cou|Embrasser le ventre|Descendre lentement|Lécher|Mordre|Griffer|Tirer les cheveux|Serrer les draps|Dos cambré|Jambes autour de la taille|Se regarder dans les yeux|Mains sur les hanches|Rythme endiablé|Chuchoter des mots doux|Dire des cochonneries|Dirty talk|Silence obligatoire|Sexe discret chez les parents|Sexe dans la nature|Sexe sous la pluie|Sexe sur le canapé|Sexe sur le lave-linge`},
+ {id:'accessoires',adult:1,name:'Boîte à jouets',em:'🎀',c:'#a21caf',w:`Vibromasseur|Œuf vibrant|Menottes en fourrure|Bandeau pour les yeux|Plume|Cravache|Martinet|Corde de bondage|Masque en cuir|Collier|Laisse|Huile chauffante|Lubrifiant|Cire de bougie|Bougie de massage|Glaçon|Crème chantilly|Sauce au chocolat|Fraises|Champagne|Préservatif parfumé|Boules de geisha|Anneau vibrant|Godemiché|Poupée gonflable|Costume d'infirmière|Costume de soubrette|Costume de policière|Costume de pompier|Uniforme|Corset|Porte-jarretelles|Bas résille|Talons hauts|Cuissardes|String en dentelle|Nuisette|Déshabillé|Gants en cuir|Tenue en cuir|Tenue en latex|Masque de Zorro|Barre de pole dance|Miroir au plafond|Lit rond|Lit à baldaquin|Draps de satin|Jacuzzi privé|Hôtel à thème|Sex-shop|Dés coquins|Jeu de cartes coquines|Carte Kamasutra|Livre érotique|Peinture corporelle|Pétales de rose|Musique sensuelle|Lumière tamisée|Encens|Bougies parfumées|Fouet en cuir|Menottes de policier|Foulard en soie|Cravate pour attacher|Plug|Gode ceinture|Chaîne en métal|Chaînes de corps|Bijou intime|Piercing|Tatouage|Huile de coco|Gel intime|Spray rafraîchissant|Crème anesthésiante|Pilule bleue|Viagra|Aphrodisiaque|Huître|Chocolat noir|Pot de miel`},
+ {id:'fantasmes',adult:1,name:'Fantasmes & rôles',em:'🎭',c:'#86198f',w:`Infirmière coquine|Policier et voleuse|Pompier sexy|Femme de chambre|Soubrette|Dominant|Soumise|Patron et secrétaire|Voisin et voisine|Livreur de pizza|Plombier|Cowboy|Pirate et prisonnière|Mafieux|Agent secret|Roi et reine|Gladiateur|Bad boy|Femme fatale|Cambrioleur|Docteur|Masseur|Masseuse|Coach sportif|Inconnu dans un bar|Rencontre dans un train|Amant mystérieux|Amants de vacances|Rendez-vous à l'aveugle|Bal masqué|Hôtel de luxe|Plan à trois|Échangisme|Sexe en public|Sexe devant un miroir|Sexe filmé|Voyeurisme|Exhibition|Se faire attacher|Attacher son partenaire|Être bandé les yeux|Dominer|Se laisser dominer|Fessée|Jeu de rôle|Mot de sécurité|Bondage soft|Cire chaude|Séance photo hot|Spectacle privé|Danse sur les genoux|Strip-poker|Action ou vérité hot|Jeu du glaçon|Body painting|Sexe en pleine nature|Sexe au clair de lune|Sexe sous la pluie|Sexe dans le jardin|Sexe dans une cabine d'essayage|Sexe sur le capot|Sexe au cinéma|Sexe sur un balcon|Sexe dans les toilettes d'une boîte|Sexe dans l'avion|Sexe dans un train|Sexe sur un bateau|Sexe dans un champ|Sexe sur une plage déserte|Sexe dans une piscine|Sexe dans un jacuzzi|Sexe sous une cascade|Sexe dans un hamac|Sexe dans une tente|Sexe dans un parking|Sexe dans une forêt|Sexe chez des amis`},
+ {id:'seduction',adult:1,name:'Séduction & drague',em:'😘',c:'#c026d3',w:`Phrase d'accroche nulle|Drague lourde|Regard insistant|Mordre sa lèvre|Clin d'œil|Bisou sur la joue|Premier baiser|Main sur le genou|Toucher le bras|Rire trop fort|Sourire charmeur|Se rapprocher|Danser collé-serré|Slow|Verre offert|Numéro de téléphone|Râteau|Friendzone|Crush|Flirt|Rendez-vous galant|Dîner aux chandelles|Resto romantique|Bras autour des épaules|Raccompagner chez soi|Dernier métro|Un café chez moi|Netflix and chill|Dernier verre|Dormir chez l'autre|Brosse à dents oubliée|Premier matin|Petit-déjeuner au lit|Message le lendemain|Rester sur vu|Swipe à droite|Match|Super like|Photo de profil retouchée|Bio Tinder|Rencontre décevante|Faux profil|Rendez-vous raté|Rire nerveux|Rougir|Bégayer|Papillons dans le ventre|Compliment|Jalousie|Ex qui revient|Drague de bar|Chanson de drague|Bouquet de roses|Boîte de chocolats|Déclaration d'amour|Poème d'amour|Lettre d'amour|Sérénade|Boîte de nuit|Vestiaire|Danse lascive|Regard dans les yeux|Main dans les cheveux|Effleurer la main|Se pencher pour parler à l'oreille|Souffler dans le cou|Offrir son manteau|Ouvrir la porte|Payer l'addition|Partager un dessert|Faire tourner son verre|Lancer un sourire|Faire un clin d'œil|Regard en coin|Passer devant exprès|Jouer avec ses cheveux|Jouer avec son collier|Se mordiller la lèvre`},
+ {id:'couple',adult:1,name:'Vie de couple',em:'💑',c:'#e11d48',w:`Ronflement|Le côté du lit|Voler la couette|Pieds froids|Chauffer le lit|Câlin du matin|Haleine du matin|Cheveux dans la douche|Siège des toilettes|Brosse à dents partagée|Porte de la salle de bain ouverte|Pyjama moche|Chaussettes sales|Télécommande|Série à deux|Choisir le resto|On mange quoi ce soir|T'as rien dit|Rien (ça veut dire quelque chose)|Courses ensemble|IKEA en couple|Montage de meuble|Ménage|Vaisselle|Panier à linge|Lit double|Oreiller|Bouillotte|Chauffage|Climatisation|Bisou du soir|Bonne nuit|Vacances en couple|Belle-famille|Dimanche chez belle-maman|Repas de famille|Anniversaire de rencontre|Saint-Valentin|Cadeau raté|Surprise|Demande en mariage|Alliance|Mariage|Voyage de noces|Soirée câlin|Massage des pieds|Bain à deux|Week-end sans enfants|Appart vide|Fatigue|Pas ce soir j'ai mal à la tête|Lundi soir câlin|Réconciliation sur l'oreiller|Dispute pour rien|Jalousie|Silence radio|Faire la tête|Faire la paix|Dormir dos à dos|Dormir collés|S'endormir sur le canapé|Se faire porter|Se porter dans les bras|Se caresser le dos|Se gratter le dos|Se tenir la main|Se regarder dans les yeux|Dire je t'aime|Se dire des mots doux|Surnom ridicule|Chéri(e)|Mon bébé|Mon cœur|Amour|Trésor`},
+ {id:'galeres',adult:1,name:'Love & galères',em:'💔',c:'#9f1239',w:`Ex|Rupture par SMS|Ghosting|Crise de jalousie|Dormir sur le canapé|Se faire griller|Péter en public|Braguette ouverte|Message à la mauvaise personne|Draguer le serveur|Infidélité|Se faire larguer|Stalker son ex|Se réveiller à côté d'un inconnu|Rupture|Cocu|Tromper|Maîtresse|Amant|Adultère|Messages cachés|Historique de navigation|Téléphone verrouillé|Mensonge|Alibi|Soirée entre potes qui dérape|Photo compromettante|Nude qui fuite|Erreur de groupe WhatsApp|Confondre les prénoms|Dire je t'aime trop tôt|Sans nouvelles|Anniversaire oublié|Cadeau oublié|Belle-mère|Coup de foudre raté|Soutien-gorge oublié|Sous-vêtement oublié|Alcool et ex|Appel de 3h du matin|Mauvaise haleine|Dispute|Réconciliation|Pardon|Thérapie de couple|Mariage arrangé|Crise de la quarantaine|Cougar|Sugar daddy|Plan cul régulier|Amis avec bénéfices|Relation compliquée|Couple libre|Polyamour|Jalousie maladive|Trop collant|Pas assez présent|Faire semblant|Faire croire|Se faire prendre|Se faire surprendre|Mot doux caché|Lingerie inconnue|Rouge à lèvres sur le col|Parfum étranger|Cheveu sur la veste|Retard au bureau|Réunion tardive|Séminaire|Soirée de Noël de l'entreprise|Photocopieuse|Dîner d'affaires`},
+ {id:'mimesx',adult:1,name:'Mimes 18+',em:'💃',c:'#c026d3',w:`Faire un strip-tease|Danser un slow collé-serré|Draguer en boîte|Faire un massage|Se faire griller en train de s'embrasser|Danser à la barre|Rentrer bourré sans faire de bruit|Avoir la gueule de bois|Dégrafer un soutien-gorge d'une main|Ouvrir une bouteille de champagne|Faire la danse du ventre|Twerker|Jouer au beer pong|Embrasser passionnément|Faire un clin d'œil séducteur|Se rhabiller en vitesse|Fuir par la fenêtre|Boire un shot|Danser sur une table|Envoyer un sexto|Faire semblant de dormir|Se faire larguer|Demander en mariage|Faire le chippendale|Dragueur lourd|Câliner un oreiller|Se faire refouler en boîte|Faire du pied sous la table|Cacher un suçon|Se faire surprendre sous la douche|Faire semblant d'avoir un orgasme|Faire un lap dance|Se mettre de la crème solaire sensuellement|Retirer ses vêtements lentement|Se faire attacher|Mettre un préservatif sur une banane|Faire un body shot|Embrasser dans le cou|Mordiller une oreille|Faire un massage des pieds sensuel|Se donner une fessée|Poser en pin-up|Faire la danse du poteau|Se déshabiller dans le noir|Se faire surprendre par ses parents|Faire l'amour en silence|Lancer un regard de braise|Passer un glaçon sur la peau|Se laver mutuellement le dos|Lécher une glace sensuellement|Manger une banane de façon suggestive|Embrasser les yeux fermés|Lancer son soutien-gorge|Faire un câlin torride|Faire un bisou dans le cou|Se faire masser les épaules|Se frotter contre son partenaire|Danser le tango en couple|Faire la danse de la séduction|Se déhancher|Se mordre la lèvre|Faire des yeux doux|Envoyer un baiser|Faire un bisou papillon|Chuchoter à l'oreille|Rougir|Faire le coup de la panne`},
+ {id:'arrosee',adult:1,name:'Soirée arrosée',em:'🍻',c:'#a21caf',w:`Gueule de bois|Shot de tequila|Beer pong|Pastis|Mojito|Apéro|Pinte|Spritz|Vodka Red Bull|Karaoké bourré|Boîte de nuit|Videur|Happy hour|Jägerbomb|Champagne|Sangria|Kebab à 4h du matin|Taxi de nuit|Dernier verre|Cul sec|Trou noir|Dancefloor|Rosé pamplemousse|Bière tiède|Barman|Soirée mousse|Photomaton|Tchin-tchin|Fût de bière|Gin tonic|Vin chaud|Limoncello|Éthylotest|After|Jeu à boire|Verre renversé|Cocktail maison|Chope|Soirée déguisée|Tequila paf|Ti punch|Rhum arrangé|Caïpirinha|Piña colada|Margarita|Mojito fraise|Daïquiri|Cosmopolitan|Long Island|Sex on the Beach|Blue Lagoon|Whisky coca|Rhum coca|Jack Daniel's|Vodka pomme|Bière pression|Ricard|Génépi|Digestif|Poire Williams|Marc de champagne|Ivre mort|Éméché|Pompette|Rond comme une queue de pelle|Vomir dans un buisson|Dormir sur le canapé d'un inconnu|Retrouver son téléphone dans le frigo|Appeler son ex|Parler à ses chaussures|Danser sur le comptoir|Chanter faux très fort|Se perdre en rentrant|Soirée d'anniversaire|Enterrement de vie de garçon|Enterrement de vie de jeune fille|Soirée d'intégration|Soirée du Nouvel An`},
+].map(c=>({...c,words:[...new Set(c.w.split('|').map(s=>s.trim()).filter(Boolean))]}));
+
+
+/* =========================================================
+   ÉTAT & STOCKAGE
+   ========================================================= */
+const LS = {
+  get(k,d){try{const v=localStorage.getItem('slf_'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},
+  set(k,v){try{localStorage.setItem('slf_'+k,JSON.stringify(v))}catch(e){}}
+};
+const S = Object.assign({duration:60,invert:false,sound:true,vib:true,tap:true,adult:false,sens:2,teams:false}, LS.get('settings',{}));
+let customs = LS.get('customs',[]);
+let seen = LS.get('seen',{});
+const TCOL=['#ef4444','#3b82f6','#22c55e','#f59e0b'];
+const TNAMES=['Équipe Rouge','Équipe Bleue','Équipe Verte','Équipe Jaune'];
+const TC = Object.assign({n:2,teams:[]}, LS.get('teamcfg',{}));
+if(!Array.isArray(TC.teams))TC.teams=[];
+for(let i=0;i<4;i++){ // un champ par prénom (migration de l'ancien format texte)
+  const t=TC.teams[i]||{name:TNAMES[i],players:['','']};
+  if(typeof t.players==='string')t.players=t.players.split(/[,;\n]/).map(s=>s.trim());
+  if(!Array.isArray(t.players)||!t.players.length)t.players=['',''];
+  TC.teams[i]=t;
+}
+const saveS=()=>LS.set('settings',S);
+const saveTC=()=>LS.set('teamcfg',TC);
+
+const $=id=>document.getElementById(id);
+function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));window.scrollTo(0,0)}
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{go(b.dataset.go);if(b.dataset.go==='home')renderHome()});
+function toast(t){const e=$('toast');e.textContent=t;e.style.display='block';clearTimeout(e._t);e._t=setTimeout(()=>e.style.display='none',2600)}
+function esc(s){return String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
+
+/* =========================================================
+   ÉQUIPES : configuration
+   ========================================================= */
+function getTeams(){
+  const out=[];
+  for(let i=0;i<TC.n;i++){
+    const t=TC.teams[i];
+    out.push({name:(t.name||'').trim()||('Équipe '+(i+1)),players:t.players.map(s=>String(s).trim()).filter(Boolean)});
+  }
+  return out;
+}
+const teamsValid=()=>getTeams().every(t=>t.players.length>=1);
+let pendingCat=null;
+
+function renderTeams(){
+  const sn=$('segTeamN');sn.innerHTML='';
+  [2,3,4].forEach(n=>{const b=document.createElement('button');b.textContent=n+' équipes';b.className=TC.n===n?'on':'';b.onclick=()=>{TC.n=n;saveTC();renderTeams()};sn.appendChild(b)});
+  const box=$('teamBoxes');box.innerHTML='';
+  for(let i=0;i<TC.n;i++){
+    const t=TC.teams[i];
+    const d=document.createElement('div');d.className='field';d.style.borderLeft='6px solid '+TCOL[i];
+    d.innerHTML=`<label>Équipe ${i+1}</label>
+      <input type="text" maxlength="24" value="${esc(t.name)}" data-i="${i}" data-name="1" placeholder="Nom de l'équipe">
+      <div class="plist"></div>
+      <button class="btn ghost small addp">＋ Ajouter un joueur</button>
+      <small>Ordre de passage : le joueur 1 passe à la manche 1, le joueur 2 à la manche 2…</small>`;
+    const pl=d.querySelector('.plist');
+    t.players.forEach((p,j)=>{
+      const r=document.createElement('div');r.className='prow';
+      r.innerHTML=`<span class="pn">${j+1}</span><input type="text" maxlength="20" value="${esc(p)}" placeholder="Prénom du joueur ${j+1}" enterkeyhint="next" autocomplete="off"><button class="x" aria-label="Retirer ce joueur">✕</button>`;
+      const inp=r.querySelector('input');
+      inp.oninput=()=>{t.players[j]=inp.value;saveTC();updTeamInfo()};
+      inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();addPlayer(i,j+1)}};
+      r.querySelector('.x').onclick=()=>{
+        if(t.players.length>1){t.players.splice(j,1);saveTC();renderTeams()}
+        else{t.players[0]='';inp.value='';saveTC();updTeamInfo()}
+      };
+      pl.appendChild(r);
+    });
+    d.querySelector('.addp').onclick=()=>addPlayer(i,t.players.length);
+    box.appendChild(d);
+  }
+  box.querySelectorAll('input[data-name]').forEach(inp=>inp.oninput=()=>{TC.teams[+inp.dataset.i].name=inp.value;saveTC();updTeamInfo()});
+  updTeamInfo();
+}
+function addPlayer(i,at){
+  const t=TC.teams[i];
+  if(t.players.length>=12){toast('12 joueurs maximum par équipe');return}
+  t.players.splice(at,0,'');saveTC();renderTeams();
+  const inputs=$('teamBoxes').querySelectorAll('.field')[i].querySelectorAll('.plist input');
+  if(inputs[at])inputs[at].focus();
+}
+function updTeamInfo(){
+  const ts=getTeams(), sizes=ts.map(t=>t.players.length), max=Math.max(...sizes);
+  let txt=`${max} manche${max>1?'s':''} au total (un joueur de chaque équipe par manche).`;
+  if(sizes.some(s=>s!==max)) txt+=' Les équipes plus petites rejouent en boucle pour compléter.';
+  $('teamInfo').textContent=txt;
+}
+function openTeams(){renderTeams();go('teams')}
+$('presetGuys').onclick=()=>{TC.n=2;TC.teams[0].name='Les Filles';TC.teams[1].name='Les Gars';saveTC();renderTeams()};
+$('teamsBack').onclick=()=>{pendingCat=null;go('home');renderHome()};
+$('teamsOk').onclick=()=>{
+  if(!teamsValid()){toast('Ajoute au moins un prénom par équipe');return}
+  go('home');renderHome();
+  if(pendingCat){const c=pendingCat;pendingCat=null;startMatch(c)}
+};
+
+/* =========================================================
+   ACCUEIL
+   ========================================================= */
+function catCard(c,onclick,extra=''){
+  const b=document.createElement('button');b.className='cat';b.style.background=c.c;
+  b.innerHTML=`${extra}<div class="em">${c.em}</div><div><div class="nm">${esc(c.name)}</div><div class="ct">${c.words.length} mots</div></div>`;
+  b.onclick=onclick;return b;
+}
+function launch(c){
+  if(S.teams){
+    if(!teamsValid()){toast('Configure d\'abord les équipes');pendingCat=c;openTeams();return}
+    startMatch(c);
+  } else start(c);
+}
+function renderHome(){
+  const gm=$('gridMain'),ga=$('gridAdult'),gc=$('gridCustom');gm.innerHTML=ga.innerHTML=gc.innerHTML='';
+  const normal=CATS.filter(c=>!c.adult), adult=CATS.filter(c=>c.adult);
+  const pool=S.adult?CATS:normal;
+  const mixAll={id:'mix',name:'Mélange',em:'🎲',c:'#4338ca',words:pool.flatMap(c=>c.words)};
+  gm.appendChild(catCard(mixAll,()=>launch(mixAll)));
+  normal.forEach(c=>gm.appendChild(catCard(c,()=>launch(c))));
+  $('adultSection').style.display=S.adult?'block':'none';
+  if(S.adult){
+    const mixX={id:'mixx',name:'Mélange 18+',em:'🔥',c:'#831843',words:adult.flatMap(c=>c.words)};
+    ga.appendChild(catCard(mixX,()=>launch(mixX),'<span class="tag">18+</span>'));
+    adult.forEach(c=>ga.appendChild(catCard(c,()=>launch(c),'<span class="tag">18+</span>')));
+  }
+  customs.forEach((c,i)=>{
+    const cc={id:'cu'+i,name:c.name,words:c.words,em:'📝',c:'#334155'};
+    const card=catCard(cc,()=>launch(cc),'<span class="tag" data-edit>✏️ modifier</span>');
+    card.querySelector('[data-edit]').onclick=e=>{e.stopPropagation();openCustom(i)};
+    gc.appendChild(card);
+  });
+  const add=document.createElement('button');add.className='cat add';add.innerHTML='<div class="em">＋</div><div class="nm" style="font-size:15px">Créer ma liste</div>';
+  add.onclick=()=>openCustom(-1);gc.appendChild(add);
+  $('adultSwitch').classList.toggle('on',S.adult);
+  $('teamSwitch').classList.toggle('on',S.teams);
+  $('cfgTeams').style.display=S.teams?'grid':'none';
+  $('teamSub').textContent=S.teams&&teamsValid()
+    ? getTeams().map(t=>t.name).join(' · ')+' — '+Math.max(...getTeams().map(t=>t.players.length))+' manche(s)'
+    : 'Les joueurs se relaient : un par équipe à chaque manche';
+}
+$('adultSwitch').onclick=()=>{
+  if(S.adult){S.adult=false;saveS();renderHome();}
+  else $('modalAdult').classList.add('on');
+};
+$('adultNo').onclick=()=>$('modalAdult').classList.remove('on');
+$('adultYes').onclick=()=>{S.adult=true;saveS();$('modalAdult').classList.remove('on');renderHome();setTimeout(()=>$('adultSection').scrollIntoView({behavior:'smooth'}),50)};
+$('teamSwitch').onclick=()=>{
+  S.teams=!S.teams;saveS();renderHome();
+  if(S.teams&&!teamsValid())openTeams();
+};
+$('cfgTeams').onclick=openTeams;
+
+/* =========================================================
+   PARTAGE : QR code généré dans la page (aucun service externe)
+   ========================================================= */
+function pageUrl(){
+  try{if(/^https?:$/.test(location.protocol))return location.origin+location.pathname.replace(/index\.html$/,'')}catch(e){}
+  return '';
+}
+function drawQR(){
+  const cv=$('qrCanvas'),ctx=cv.getContext('2d'),url=$('shareUrl').value.trim();
+  if(!/^https?:\/\/[^\s\/]+\.[^\s\/]+/.test(url)){
+    cv.width=cv.height=300;ctx.fillStyle='#fff';ctx.fillRect(0,0,300,300);
+    $('qrMsg').textContent='Entre l\'adresse publique du jeu (https://…) pour générer le QR code.';return;
+  }
+  $('qrMsg').textContent='';
+  const q=new QRCodeLib(-1,QR_ECL.M);q.addData(url);q.make();
+  const n=q.getModuleCount(),quiet=4,px=Math.max(6,Math.ceil(480/(n+quiet*2))),size=px*(n+quiet*2);
+  cv.width=cv.height=size;
+  ctx.fillStyle='#fff';ctx.fillRect(0,0,size,size);ctx.fillStyle='#000';
+  for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(q.isDark(r,c))ctx.fillRect((c+quiet)*px,(r+quiet)*px,px,px);
+}
+$('openShare').onclick=()=>{
+  $('shareUrl').value=pageUrl()||LS.get('shareurl','');
+  drawQR();$('modalShare').classList.add('on');
+};
+$('shareUrl').oninput=()=>{if(!pageUrl())LS.set('shareurl',$('shareUrl').value.trim());drawQR()};
+$('qrClose').onclick=()=>$('modalShare').classList.remove('on');
+$('qrCopy').onclick=async()=>{
+  const u=$('shareUrl').value.trim();
+  try{await navigator.clipboard.writeText(u);toast('Lien copié')}
+  catch(e){$('shareUrl').select();toast('Sélectionné : copie-le à la main')}
+};
+$('qrSave').onclick=()=>{
+  try{
+    const a=document.createElement('a');a.download='sur-le-front-qr.png';a.href=$('qrCanvas').toDataURL('image/png');
+    document.body.appendChild(a);a.click();a.remove();toast('QR code enregistré');
+  }catch(e){toast('Maintiens ton doigt sur le QR pour l\'enregistrer')}
+};
+
+/* =========================================================
+   RÉGLAGES
+   ========================================================= */
+$('openSettings').onclick=()=>{renderSettings();go('settings')};
+function renderSettings(){
+  const sd=$('segDur');sd.innerHTML='';
+  [30,60,90,120].forEach(d=>{const b=document.createElement('button');b.textContent=d+' s';b.className=S.duration===d?'on':'';b.onclick=()=>{S.duration=d;saveS();renderSettings()};sd.appendChild(b)});
+  const ss=$('segSens');ss.innerHTML='';
+  [['Faible',1],['Normale',2],['Forte',3]].forEach(([l,v])=>{const b=document.createElement('button');b.textContent=l;b.className=S.sens===v?'on':'';b.onclick=()=>{S.sens=v;saveS();renderSettings()};ss.appendChild(b)});
+  $('swInvert').classList.toggle('on',S.invert);
+  $('invTxt').textContent=S.invert?'Actuel : écran vers le sol = valider, vers le plafond = passer':'Actuel : écran vers le plafond = valider, vers le sol = passer';
+  $('swSound').classList.toggle('on',S.sound);$('swVib').classList.toggle('on',S.vib);$('swTap').classList.toggle('on',S.tap);
+}
+[['swInvert','invert'],['swSound','sound'],['swVib','vib'],['swTap','tap']].forEach(([id,k])=>$(id).onclick=()=>{S[k]=!S[k];saveS();renderSettings()});
+$('resetSeen').onclick=()=>{seen={};LS.set('seen',seen);toast('Historique des mots vidé')};
+
+/* =========================================================
+   LISTES PERSO
+   ========================================================= */
+let editIdx=-1;
+function openCustom(i){
+  editIdx=i;const c=customs[i];
+  $('customTitle').textContent=c?'Modifier la liste':'Nouvelle liste';
+  $('cName').value=c?c.name:'';$('cWords').value=c?c.words.join('\n'):'';
+  $('cDelete').style.display=c?'block':'none';updCount();go('custom');
+}
+function parseWords(){return [...new Set($('cWords').value.split('\n').map(s=>s.trim()).filter(Boolean))]}
+function updCount(){const n=parseWords().length;$('cCount').textContent=n+(n>1?' mots':' mot')}
+$('cWords').oninput=updCount;
+$('cSave').onclick=()=>{
+  const name=$('cName').value.trim()||'Ma liste', words=parseWords();
+  if(words.length<3){toast('Ajoute au moins 3 mots');return}
+  const c={name,words};
+  if(editIdx>=0)customs[editIdx]=c;else customs.push(c);
+  LS.set('customs',customs);go('home');renderHome();
+};
+$('cDelete').onclick=()=>{customs.splice(editIdx,1);LS.set('customs',customs);go('home');renderHome()};
+
+/* =========================================================
+   SONS / VIBRATIONS / ÉCRAN
+   ========================================================= */
+let AC=null;
+function audio(){try{if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume()}catch(e){}}
+function beep(f=660,d=.12,type='sine',vol=.25,delay=0){
+  if(!S.sound||!AC)return;
+  const t=AC.currentTime+delay,o=AC.createOscillator(),g=AC.createGain();
+  o.type=type;o.frequency.setValueAtTime(f,t);g.gain.setValueAtTime(vol,t);g.gain.exponentialRampToValueAtTime(.001,t+d);
+  o.connect(g).connect(AC.destination);o.start(t);o.stop(t+d+.02);
+}
+const sOk=()=>{beep(880,.1,'triangle');beep(1320,.18,'triangle',.25,.08)};
+const sPass=()=>{beep(300,.2,'sawtooth',.15)};
+const sTick=()=>beep(1000,.06,'square',.12);
+const sEnd=()=>{beep(520,.25,'square',.2);beep(390,.5,'square',.2,.25)};
+const sWin=()=>{[523,659,784,1047].forEach((f,i)=>beep(f,.2,'triangle',.25,i*.12))};
+function vib(p){if(S.vib&&navigator.vibrate)try{navigator.vibrate(p)}catch(e){}}
+let wakeLock=null;
+async function keepAwake(){try{if('wakeLock' in navigator)wakeLock=await navigator.wakeLock.request('screen')}catch(e){}}
+function releaseAwake(){try{wakeLock&&wakeLock.release()}catch(e){}wakeLock=null}
+async function goFullscreen(){
+  try{const el=document.documentElement;if(!document.fullscreenElement&&el.requestFullscreen)await el.requestFullscreen({navigationUI:'hide'})}catch(e){}
+  try{if(screen.orientation&&screen.orientation.lock)await screen.orientation.lock('landscape')}catch(e){}
+}
+function exitFullscreen(){try{screen.orientation&&screen.orientation.unlock&&screen.orientation.unlock()}catch(e){}try{document.fullscreenElement&&document.exitFullscreen()}catch(e){}}
+
+/* =========================================================
+   CAPTEUR D'INCLINAISON
+   upZ = composante « vers le haut » du monde sur l'axe perpendiculaire à l'écran.
+   ≈0 téléphone vertical sur le front ; +1 écran vers le plafond ; -1 vers le sol.
+   ========================================================= */
+let upZ=0, gotSensor=false, sensorAsked=false, neutral=0, armed=false, cooldown=0, samples=[], lastEvt=0, sensorState='unknown', sensorTest=false;
+const D=Math.PI/180;
+function onOrientation(e){
+  if(e.beta==null||e.gamma==null)return; // appareil sans capteur / premier évènement vide
+  upZ=Math.cos(e.beta*D)*Math.cos(e.gamma*D);
+  gotSensor=true;lastEvt=performance.now();
+  samples.push(upZ);if(samples.length>15)samples.shift();
+  if(sensorTest)updGauge();
+  if(phase==='play')checkTilt();
+}
+/* iOS 13+ : requestPermission() doit être appelé directement dans un geste (clic).
+   Android / Chrome : pas de permission, mais HTTPS obligatoire. */
+async function askSensor(){
+  if(sensorAsked)return;
+  try{
+    if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
+      const r=await DeviceOrientationEvent.requestPermission();
+      if(r!=='granted'){sensorState='denied';toast('Capteur refusé : contrôle tactile activé');return}
+    }
+    window.addEventListener('deviceorientation',onOrientation);
+    window.addEventListener('deviceorientationabsolute',onOrientation); // repli sur certains Android
+    sensorAsked=true;sensorState='ok';
+  }catch(e){sensorState='error';toast('Capteur indisponible : contrôle tactile activé')}
+}
+const isIOS=()=>/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+function sensorHelp(){
+  if(!window.isSecureContext)return 'Le capteur est bloqué car la page n\'est pas en HTTPS. Ouvre le jeu via son adresse https:// (scanne le QR code), pas depuis un fichier.';
+  if(sensorState==='denied')return isIOS()
+    ?'Accès refusé. Ferme complètement cet onglet Safari, rouvre le jeu et appuie sur « Autoriser » quand iOS demande l\'accès au mouvement et à l\'orientation.'
+    :'Accès refusé. Dans les réglages du navigateur, autorise les « Capteurs de mouvement » pour ce site, puis recharge la page.';
+  return isIOS()
+    ?'Réglages > Safari > active « Accès au mouvement et à l\'orientation » (selon la version d\'iOS), recharge la page et autorise l\'accès. Vérifie aussi que le mode économie d\'énergie n\'est pas activé.'
+    :'Chrome > ⋮ > Paramètres > Paramètres du site > Capteurs de mouvement > Autoriser, puis recharge la page. Ton téléphone doit avoir un gyroscope ou un accéléromètre.';
+}
+function thresholds(){return {act:[.68,.55,.42][S.sens-1], rearm:.25}}
+
+/* ---- Écran de test du capteur (réglages > Tester) ---- */
+let sensorTimer=0, sensorOpenAt=0;
+function recal(){neutral=Math.max(-.35,Math.min(.35,samples.length?samples.reduce((a,b)=>a+b,0)/samples.length:upZ))}
+function updSensorStatus(){
+  const live=lastEvt>sensorOpenAt; // les capteurs n'émettent pas toujours si le téléphone est parfaitement immobile
+  const el=$('sStatus'),help=$('sHelp');
+  if(live){el.textContent='✅ Capteur détecté : ça marche';el.style.color='var(--ok)';help.textContent='';return}
+  if(performance.now()-sensorOpenAt<3000&&sensorState!=='denied'&&window.isSecureContext){el.textContent='⏳ Recherche du capteur…';el.style.color='var(--mute)';help.textContent='';return}
+  el.textContent='❌ Aucun mouvement détecté';el.style.color='var(--pass)';help.textContent=sensorHelp();
+}
+function updGauge(){
+  const {act}=thresholds(),d=upZ-neutral;
+  const pos=50+Math.max(-1,Math.min(1,d/(act*1.4)))*46;
+  $('gDot').style.left=pos+'%';
+  const st=$('gState');
+  const up=S.invert?'PASSE ⬆️':'VALIDÉ ⬆️', down=S.invert?'VALIDÉ ⬇️':'PASSE ⬇️';
+  if(d>act){st.textContent=up;st.style.color=S.invert?'var(--pass)':'var(--ok)'}
+  else if(d<-act){st.textContent=down;st.style.color=S.invert?'var(--ok)':'var(--pass)'}
+  else{st.textContent='Neutre';st.style.color='var(--mute)'}
+}
+$('openSensor').onclick=()=>{
+  askSensor();                       // dans le geste du clic (iOS)
+  sensorTest=true;sensorOpenAt=performance.now();samples=[];neutral=0;
+  go('sensor');updSensorStatus();updGauge();
+  clearInterval(sensorTimer);sensorTimer=setInterval(()=>{if(!neutralLocked&&samples.length>=10){recal();neutralLocked=true}updSensorStatus()},500);
+  neutralLocked=false;
+};
+let neutralLocked=false;
+$('sRecal').onclick=()=>{recal();updGauge();toast('Position neutre recalibrée')};
+const leaveSensor=()=>{sensorTest=false;clearInterval(sensorTimer);go('settings')};
+$('sensorBack').onclick=leaveSensor;$('sensorOk').onclick=leaveSensor;
+function checkTilt(){
+  const d=upZ-neutral,{act,rearm}=thresholds();
+  if(!armed){if(Math.abs(d)<rearm)armed=true;return}
+  if(performance.now()<cooldown)return;
+  if(d>act)act_(S.invert?'pass':'ok');
+  else if(d<-act)act_(S.invert?'ok':'pass');
+}
+
+/* =========================================================
+   PARTIE (une manche)
+   ========================================================= */
+let phase='idle', cur=null, deck=[], idx=0, results=[], tEnd=0, raf=0, lastSec=-1, countTimer=0;
+let M=null; // match en mode équipes
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a}
+function buildDeck(c){
+  const s=new Set(seen[c.id]||[]);let fresh=c.words.filter(w=>!s.has(w));
+  if(fresh.length<15){seen[c.id]=[];fresh=c.words.slice()}
+  return shuffle(fresh);
+}
+/* Partie rapide, sans équipes */
+async function start(c){
+  audio();cur=c;M=null;
+  await askSensor();
+  await goFullscreen();
+  keepAwake();
+  deck=buildDeck(c);idx=0;
+  prepareTurn(c.name,'Mets le téléphone sur ton front','Écran tourné vers tes amis, à l\'horizontale.');
+}
+/* Compte à rebours avant une manche */
+function prepareTurn(label,title,hint){
+  results=[];
+  $('rCat').textContent=label;
+  const ok=S.invert?'⬇️ écran vers le sol':'⬆️ écran vers le plafond', pass=S.invert?'⬆️ écran vers le plafond':'⬇️ écran vers le sol';
+  $('rLegend').innerHTML=`<div style="color:var(--ok)">${ok} = valider</div><div style="color:var(--pass)">${pass} = passer</div>`;
+  go('ready');phase='ready';
+  $('rTitle').textContent=title;$('rHint').textContent=hint;
+  let n=4;$('rCount').textContent='';
+  clearInterval(countTimer);
+  countTimer=setInterval(()=>{
+    n--;
+    if(n>0){$('rCount').textContent=n;sTick();vib(40)}
+    else{clearInterval(countTimer);
+      const avg=samples.length?samples.reduce((a,b)=>a+b,0)/samples.length:0;
+      neutral=Math.max(-.35,Math.min(.35,avg));
+      beginRound();
+    }
+  },1000);
+}
+function beginRound(){
+  phase='play';go('play');
+  $('play').className='screen on';
+  $('sensorWarn').style.display='none';
+  $('tapsHint').style.display=S.tap?'flex':'none';
+  armed=false;cooldown=performance.now()+400;
+  showWord();
+  tEnd=performance.now()+S.duration*1000;lastSec=-1;
+  $('liveScore').textContent='0';
+  beep(1200,.15,'triangle');vib(80);
+  cancelAnimationFrame(raf);loop();
+  setTimeout(()=>{if(phase==='play'&&!gotSensor){$('sensorWarn').textContent='Capteur non détecté (voir Réglages > Tester le capteur). En attendant : touche à droite pour valider, à gauche pour passer.';$('sensorWarn').style.display='block';$('tapsHint').style.display='flex'}},1500);
+}
+function fitWord(t){
+  const el=$('word');el.textContent=t;
+  const vw=Math.max(window.innerWidth,1), vh=window.innerHeight;
+  let size=Math.min(vh*0.3,vw*0.2,170);
+  el.style.fontSize=size+'px';
+  const maxH=vh*0.62, maxW=vw*0.92;
+  let n=0;
+  while((el.scrollHeight>maxH||el.scrollWidth>maxW)&&size>26&&n++<40){size*=0.92;el.style.fontSize=size+'px'}
+}
+function showWord(){
+  if(idx>=deck.length){deck=deck.concat(shuffle(cur.words.slice()))}
+  $('feedback').style.display='none';$('word').style.display='block';
+  fitWord(deck[idx]);
+}
+function act_(type){
+  if(phase!=='play')return;
+  const w=deck[idx];results.push({w,ok:type==='ok'});
+  (seen[cur.id]=seen[cur.id]||[]).push(w);
+  armed=false;cooldown=performance.now()+650;
+  const p=$('play');p.classList.remove('ok','pass');p.classList.add(type);
+  $('word').style.display='none';const fb=$('feedback');fb.style.display='block';
+  fb.textContent=type==='ok'?'TROUVÉ !':'PASSE';
+  if(type==='ok'){sOk();vib([40,40,40])}else{sPass();vib(150)}
+  $('liveScore').textContent=results.filter(r=>r.ok).length;
+  idx++;
+  setTimeout(()=>{if(phase!=='play')return;p.classList.remove('ok','pass');showWord()},600);
+}
+function loop(){
+  if(phase!=='play')return;
+  const left=Math.max(0,tEnd-performance.now()), sec=Math.ceil(left/1000);
+  if(sec!==lastSec){lastSec=sec;const t=$('timer');t.textContent=sec;t.classList.toggle('hot',sec<=5);if(sec<=5&&sec>0)sTick()}
+  $('prog').style.width=(left/(S.duration*1000)*100)+'%';
+  if(left<=0){endRound();return}
+  raf=requestAnimationFrame(loop);
+}
+function endRound(){
+  phase='end';cancelAnimationFrame(raf);sEnd();vib([200,100,300]);
+  LS.set('seen',seen);releaseAwake();exitFullscreen();
+  const score=results.filter(r=>r.ok).length;
+  $('eScore').textContent=score;
+  $('eLabel').textContent=score>1?'mots trouvés':'mot trouvé';
+  $('eList').innerHTML=results.map(r=>`<li class="${r.ok?'ok':''}"><span class="s">${r.ok?'✅':'⏭️'}</span>${esc(r.w)}</li>`).join('')||'<li>Aucun mot joué</li>';
+  const btns=$('eBtns');btns.innerHTML='';
+  const mk=(txt,cls,fn)=>{const b=document.createElement('button');b.className='btn '+cls;b.textContent=txt;b.onclick=fn;btns.appendChild(b)};
+  if(M){
+    const t=M.teams[M.ti];t.score+=score;
+    $('eCat').textContent=`${curPlayer()} · ${t.name}`;
+    $('eBoard').style.display='flex';renderBoard($('eBoard'),false);
+    const last=(M.ti===M.teams.length-1&&M.round===M.rounds-1);
+    mk('Quitter','ghost',quit);
+    mk(last?'Voir le résultat':'Joueur suivant','',nextTurn);
+  } else {
+    $('eCat').textContent=cur.name;
+    $('eBoard').style.display='none';
+    mk('Menu','ghost',()=>{go('home');renderHome()});
+    mk('Rejouer','',()=>start(cur));
+  }
+  go('end');
+}
+function quit(){
+  phase='idle';M=null;clearInterval(countTimer);cancelAnimationFrame(raf);releaseAwake();exitFullscreen();
+  if(results.length)LS.set('seen',seen);
+  go('home');renderHome();
+}
+$('quit').onclick=e=>{e.stopPropagation();quit()};
+const tap=t=>e=>{e.preventDefault();if(!S.tap&&gotSensor)return;if(performance.now()<cooldown)return;act_(t)};
+$('tapR').addEventListener('pointerdown',tap('ok'));
+$('tapL').addEventListener('pointerdown',tap('pass'));
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&phase==='play')keepAwake()});
+window.addEventListener('resize',()=>{if(phase==='play'&&$('word').style.display!=='none')fitWord(deck[idx])});
+
+/* =========================================================
+   MODE ÉQUIPES : relais
+   Manche 1 : joueur 1 de l'équipe A, puis joueur 1 de l'équipe B…
+   Manche 2 : joueur 2 de chaque équipe, etc.
+   ========================================================= */
+function curPlayer(){const t=M.teams[M.ti];return t.players[M.round%t.players.length]}
+function renderBoard(el,showCur){
+  const max=Math.max(1,...M.teams.map(t=>t.score));
+  el.innerHTML=M.teams.map((t,i)=>`<div class="brow ${showCur&&i===M.ti?'cur':''}"><span class="dot" style="background:${t.color}"></span><span class="bn">${esc(t.name)}</span><div class="bar"><i style="width:${t.score/max*100}%;background:${t.color}"></i></div><b>${t.score}</b></div>`).join('');
+}
+function startMatch(c){
+  audio();askSensor(); // dans le geste utilisateur (iOS)
+  cur=c;
+  const teams=getTeams().map((t,i)=>({...t,score:0,color:TCOL[i]}));
+  M={cat:c,teams,round:0,ti:0,rounds:Math.max(...teams.map(t=>t.players.length))};
+  deck=buildDeck(c);idx=0;
+  showHandoff();
+}
+function showHandoff(){
+  const t=M.teams[M.ti], p=curPlayer();
+  $('hRound').textContent=`Manche ${M.round+1} / ${M.rounds}`;
+  $('hTeam').textContent=t.name;$('hTeam').style.color=t.color;
+  $('hName').textContent=p;
+  const mates=t.players.filter((_,i)=>i!==(M.round%t.players.length));
+  $('hHint').textContent=`${p}, tu mets le téléphone sur ton front. ${mates.length?mates.join(', ')+(mates.length>1?' te font':' te fait')+' deviner les mots !':'Tes équipiers te font deviner les mots !'}`;
+  $('hCat').textContent='Thème : '+M.cat.name;
+  renderBoard($('hBoard'),true);
+  go('handoff');
+}
+$('hGo').onclick=async()=>{
+  audio();await askSensor();await goFullscreen();keepAwake();
+  const t=M.teams[M.ti];
+  prepareTurn(`${curPlayer()} · ${t.name}`,'Téléphone sur le front !','Écran tourné vers ton équipe.');
+};
+$('hQuit').onclick=quit;
+function nextTurn(){
+  M.ti++;if(M.ti>=M.teams.length){M.ti=0;M.round++}
+  if(M.round>=M.rounds)return showFinal();
+  showHandoff();
+}
+function showFinal(){
+  const max=Math.max(...M.teams.map(t=>t.score));
+  const winners=M.teams.filter(t=>t.score===max);
+  $('fTitle').textContent=winners.length>1?'Égalité !':`🏆 ${winners[0].name} gagne !`;
+  $('fTitle').style.color=winners.length>1?'var(--acc)':winners[0].color;
+  renderBoard($('fBoard'),false);
+  sWin();vib([100,60,100,60,300]);
+  go('final');
+}
+$('fMenu').onclick=()=>{M=null;phase='idle';go('home');renderHome()};
+$('fReplay').onclick=()=>startMatch(M.cat);
+
+renderHome();
+</script>
+</body>
+</html>
