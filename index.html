@@ -2016,8 +2016,9 @@ function buildDeck(c){
 /* Partie rapide, sans équipes */
 async function start(c){
   audio();cur=c;M=null;
-  const fs=goFullscreen();           // plein écran + verrou paysage (Android), dans le geste
-  await askSensor();await fs;
+  const sp=askSensor();              // 1) autorisation capteur : toujours en premier, dans le geste (iOS)
+  const fs=isIOS()?Promise.resolve():goFullscreen(); // 2) plein écran + verrou paysage (Android)
+  await sp;await fs;
   keepAwake();
   deck=buildDeck(c);idx=0;
   prepareTurn(c.name,'Mets le téléphone sur ton front','Écran tourné vers tes amis, à l\'horizontale.');
@@ -2182,7 +2183,7 @@ function showHandoff(){
   go('handoff');
 }
 $('hGo').onclick=async()=>{
-  audio();const fs=goFullscreen();await askSensor();await fs;keepAwake();
+  audio();const sp=askSensor();const fs=isIOS()?Promise.resolve():goFullscreen();await sp;await fs;keepAwake();
   const t=M.teams[M.ti];
   prepareTurn(`${curPlayer()} · ${t.name}`,'Téléphone sur le front !','Écran tourné vers ton équipe.');
 };
