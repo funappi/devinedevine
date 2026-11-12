@@ -87,11 +87,11 @@ textarea{min-height:220px;resize:vertical}
 #play{background:#1d1830;transition:background .15s}
 #play.ok{background:var(--ok)}
 #play.pass{background:var(--pass)}
-#play .center{max-width:94vw}
-#play .timer{position:absolute;top:calc(12px + env(safe-area-inset-top));left:0;right:0;font-size:clamp(22px,5vw,34px);font-weight:800;opacity:.9}
+#play .center{max-width:94%}
+#play .timer{pointer-events:none;position:absolute;top:calc(12px + env(safe-area-inset-top));left:0;right:0;font-size:clamp(22px,5vw,34px);font-weight:800;opacity:.9}
 #play .timer.hot{color:#ff5a5a}
-#play .score{position:absolute;top:calc(14px + env(safe-area-inset-top));right:calc(20px + env(safe-area-inset-right));font-weight:800;font-size:20px;opacity:.8}
-#play .quit{position:absolute;top:calc(10px + env(safe-area-inset-top));left:calc(14px + env(safe-area-inset-left));background:rgba(0,0,0,.25);width:42px;height:42px;border-radius:12px;font-size:20px}
+#play .score{pointer-events:none;position:absolute;top:calc(14px + env(safe-area-inset-top));right:calc(20px + env(safe-area-inset-right));font-weight:800;font-size:20px;opacity:.8}
+.quit{position:absolute;z-index:6;top:calc(8px + env(safe-area-inset-top));left:calc(12px + env(safe-area-inset-left));background:rgba(0,0,0,.35);width:48px;height:48px;border-radius:14px;font-size:22px;font-weight:800;color:#fff;touch-action:manipulation}
 #word{font-weight:800;line-height:1.02;letter-spacing:-1px;padding:0 2vw;word-break:break-word;hyphens:auto}
 #feedback{font-size:clamp(50px,14vw,120px);font-weight:800;display:none}
 #play .taps{position:absolute;bottom:calc(10px + env(safe-area-inset-bottom));left:0;right:0;display:flex;justify-content:space-between;padding:0 18px;color:rgba(255,255,255,.45);font-size:13px;font-weight:700;pointer-events:none}
@@ -124,6 +124,13 @@ textarea{min-height:220px;resize:vertical}
 .hcat{margin-top:12px;font-weight:700;color:var(--acc)}
 #handoff .row{position:sticky;bottom:0;padding:14px 0 calc(10px + env(safe-area-inset-bottom));background:linear-gradient(rgba(20,17,31,0),var(--bg) 35%)}
 .sstat{font-weight:800;font-size:18px}
+#rot{position:fixed;inset:0;z-index:80;background:var(--bg);display:none;align-items:center;justify-content:center;padding:24px;text-align:center}
+#rot.on{display:flex}
+#rot .rotico{font-size:64px;line-height:1;animation:rot 2s ease-in-out infinite}
+@keyframes rot{0%,100%{transform:rotate(0)}50%{transform:rotate(-90deg)}}
+#rot h3{font-size:26px;margin:14px 0 6px}
+#rot p{color:var(--mute);margin:0 0 12px;line-height:1.4}
+#rot .row{justify-content:center;margin-bottom:10px}
 .gauge{position:relative;height:46px;border-radius:99px;overflow:hidden;background:linear-gradient(90deg,rgba(249,115,22,.35),#120f1c 40%,#120f1c 60%,rgba(34,197,94,.35))}
 .gauge .gl,.gauge .gr{position:absolute;top:0;bottom:0;display:flex;align-items:center;font-size:12px;font-weight:700;color:var(--mute);padding:0 14px}
 .gauge .gl{left:0}.gauge .gr{right:0}
@@ -278,6 +285,7 @@ textarea{min-height:220px;resize:vertical}
 
 <!-- ============ READY ============ -->
 <section id="ready" class="screen">
+  <button class="quit" id="quitR" aria-label="Quitter la partie">✕</button>
   <div>
     <div class="catname" id="rCat"></div>
     <div class="big" id="rTitle">Mets le téléphone sur ton front</div>
@@ -333,6 +341,14 @@ textarea{min-height:220px;resize:vertical}
 </section>
 
 <!-- ============ MODALS ============ -->
+<div id="rot"><div>
+  <div class="rotico">📱</div>
+  <h3>Tourne ton téléphone en paysage</h3>
+  <p>Pour jouer, le téléphone se tient à l'horizontale, sur le front.</p>
+  <p style="font-size:13px">Rotation automatique bloquée sur ton téléphone ? Force l'affichage :</p>
+  <div class="row"><button class="btn ghost small" data-fr="l">↺ Forcer à gauche</button><button class="btn ghost small" data-fr="r">↻ Forcer à droite</button></div>
+  <button class="btn ghost small" id="rotQuit">Annuler</button>
+</div></div>
 <div class="modal" id="modalAdult">
   <div class="box">
     <h3>🔞 Réservé aux adultes</h3>
@@ -1677,7 +1693,7 @@ const saveS=()=>LS.set('settings',S);
 const saveTC=()=>LS.set('teamcfg',TC);
 
 const $=id=>document.getElementById(id);
-function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));window.scrollTo(0,0)}
+function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));window.scrollTo(0,0);if(typeof applyOrient==='function')applyOrient()}
 document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{go(b.dataset.go);if(b.dataset.go==='home')renderHome()});
 function toast(t){const e=$('toast');e.textContent=t;e.style.display='block';clearTimeout(e._t);e._t=setTimeout(()=>e.style.display='none',2600)}
 function esc(s){return String(s).replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
@@ -1978,6 +1994,7 @@ $('sRecal').onclick=()=>{recal();updGauge();toast('Position neutre recalibrée')
 const leaveSensor=()=>{sensorTest=false;clearInterval(sensorTimer);go('settings')};
 $('sensorBack').onclick=leaveSensor;$('sensorOk').onclick=leaveSensor;
 function checkTilt(){
+  if(orientBlocked())return;
   const d=upZ-neutral,{act,rearm}=thresholds();
   if(!armed){if(Math.abs(d)<rearm)armed=true;return}
   if(performance.now()<cooldown)return;
@@ -1999,8 +2016,8 @@ function buildDeck(c){
 /* Partie rapide, sans équipes */
 async function start(c){
   audio();cur=c;M=null;
-  await askSensor();
-  await goFullscreen();
+  const fs=goFullscreen();           // plein écran + verrou paysage (Android), dans le geste
+  await askSensor();await fs;
   keepAwake();
   deck=buildDeck(c);idx=0;
   prepareTurn(c.name,'Mets le téléphone sur ton front','Écran tourné vers tes amis, à l\'horizontale.');
@@ -2011,11 +2028,12 @@ function prepareTurn(label,title,hint){
   $('rCat').textContent=label;
   const ok=S.invert?'⬇️ écran vers le sol':'⬆️ écran vers le plafond', pass=S.invert?'⬆️ écran vers le plafond':'⬇️ écran vers le sol';
   $('rLegend').innerHTML=`<div style="color:var(--ok)">${ok} = valider</div><div style="color:var(--pass)">${pass} = passer</div>`;
-  go('ready');phase='ready';
+  phase='ready';go('ready');
   $('rTitle').textContent=title;$('rHint').textContent=hint;
   let n=4;$('rCount').textContent='';
   clearInterval(countTimer);
   countTimer=setInterval(()=>{
+    if(orientBlocked())return;       // on attend que le téléphone soit en paysage
     n--;
     if(n>0){$('rCount').textContent=n;sTick();vib(40)}
     else{clearInterval(countTimer);
@@ -2030,7 +2048,7 @@ function beginRound(){
   $('play').className='screen on';
   $('sensorWarn').style.display='none';
   $('tapsHint').style.display=S.tap?'flex':'none';
-  armed=false;cooldown=performance.now()+400;
+  armed=false;cooldown=performance.now()+400;loopLast=0;
   showWord();
   tEnd=performance.now()+S.duration*1000;lastSec=-1;
   $('liveScore').textContent='0';
@@ -2040,7 +2058,7 @@ function beginRound(){
 }
 function fitWord(t){
   const el=$('word');el.textContent=t;
-  const vw=Math.max(window.innerWidth,1), vh=window.innerHeight;
+  const {w:vw,h:vh}=viewDims();
   let size=Math.min(vh*0.3,vw*0.2,170);
   el.style.fontSize=size+'px';
   const maxH=vh*0.62, maxW=vw*0.92;
@@ -2065,8 +2083,11 @@ function act_(type){
   idx++;
   setTimeout(()=>{if(phase!=='play')return;p.classList.remove('ok','pass');showWord()},600);
 }
+let loopLast=0;
 function loop(){
   if(phase!=='play')return;
+  const now=performance.now(),dt=loopLast?now-loopLast:0;loopLast=now;
+  if(orientBlocked()){tEnd+=dt;raf=requestAnimationFrame(loop);return} // pause tant que pas en paysage
   const left=Math.max(0,tEnd-performance.now()), sec=Math.ceil(left/1000);
   if(sec!==lastSec){lastSec=sec;const t=$('timer');t.textContent=sec;t.classList.toggle('hot',sec<=5);if(sec<=5&&sec>0)sTick()}
   $('prog').style.width=(left/(S.duration*1000)*100)+'%';
@@ -2102,12 +2123,34 @@ function quit(){
   if(results.length)LS.set('seen',seen);
   go('home');renderHome();
 }
-$('quit').onclick=e=>{e.stopPropagation();quit()};
-const tap=t=>e=>{e.preventDefault();if(!S.tap&&gotSensor)return;if(performance.now()<cooldown)return;act_(t)};
+['quit','quitR'].forEach(id=>{const b=$(id);const f=e=>{e.preventDefault();e.stopPropagation();if(phase==='ready'||phase==='play')quit()};b.addEventListener('click',f);b.addEventListener('pointerdown',e=>e.stopPropagation())});
+const tap=t=>e=>{e.preventDefault();if(orientBlocked())return;if(!S.tap&&gotSensor)return;if(performance.now()<cooldown)return;act_(t)};
 $('tapR').addEventListener('pointerdown',tap('ok'));
 $('tapL').addEventListener('pointerdown',tap('pass'));
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&phase==='play')keepAwake()});
-window.addEventListener('resize',()=>{if(phase==='play'&&$('word').style.display!=='none')fitWord(deck[idx])});
+/* ---- Paysage forcé : verrou natif (Android) sinon écran d'invite + rotation CSS (iPhone, rotation verrouillée) ---- */
+let forceDir=LS.get('forcedir',null); // 'l' | 'r' | null
+const inGame=()=>phase==='ready'||phase==='play';
+const isPortrait=()=>window.innerHeight>window.innerWidth;
+const orientBlocked=()=>inGame()&&isPortrait()&&!forceDir;
+const rotated=()=>inGame()&&isPortrait()&&!!forceDir;
+function viewDims(){const w=Math.max(window.innerWidth,1),h=Math.max(window.innerHeight,1);return rotated()?{w:h,h:w}:{w,h}}
+function applyOrient(){
+  const W=window.innerWidth,H=window.innerHeight;
+  ['ready','play'].forEach(id=>{
+    const el=$(id),st=el.style;
+    if(rotated()){
+      st.inset='auto';st.top='0';st.left='0';st.width=H+'px';st.height=W+'px';st.minHeight='0';st.transformOrigin='0 0';
+      st.transform=forceDir==='r'?`translateX(${W}px) rotate(90deg)`:`translateY(${H}px) rotate(-90deg)`;
+    }else{st.inset=st.top=st.left=st.width=st.height=st.minHeight=st.transform=st.transformOrigin=''}
+  });
+  $('rot').classList.toggle('on',orientBlocked());
+  if(phase==='play'&&$('word').style.display!=='none'&&deck[idx])fitWord(deck[idx]);
+}
+document.querySelectorAll('[data-fr]').forEach(b=>b.onclick=()=>{forceDir=b.dataset.fr;LS.set('forcedir',forceDir);applyOrient()});
+$('rotQuit').onclick=()=>quit();
+window.addEventListener('resize',applyOrient);
+window.addEventListener('orientationchange',()=>setTimeout(applyOrient,150));
 
 /* =========================================================
    MODE ÉQUIPES : relais
@@ -2139,7 +2182,7 @@ function showHandoff(){
   go('handoff');
 }
 $('hGo').onclick=async()=>{
-  audio();await askSensor();await goFullscreen();keepAwake();
+  audio();const fs=goFullscreen();await askSensor();await fs;keepAwake();
   const t=M.teams[M.ti];
   prepareTurn(`${curPlayer()} · ${t.name}`,'Téléphone sur le front !','Écran tourné vers ton équipe.');
 };
