@@ -214,6 +214,9 @@ textarea{min-height:220px;resize:vertical}
       <div class="line"><div><label style="margin:0">Contrôle tactile en secours</label><small>Toucher à droite = valider, à gauche = passer</small></div><button class="switch" id="swTap"></button></div>
     </div>
     <div class="field">
+      <div class="line"><div><label style="margin:0">Mettre à jour les mots</label><small id="remoteInfo">Nouveaux mots et thèmes depuis words.json</small></div><button class="btn ghost small" id="updWords">Mettre à jour</button></div>
+    </div>
+    <div class="field">
       <div class="line"><div><label style="margin:0">Réinitialiser les mots déjà vus</label><small>Les mots tombés ne reviennent pas tant que la liste n'est pas épuisée.</small></div><button class="btn ghost small" id="resetSeen">Vider</button></div>
     </div>
   </div>
@@ -2205,7 +2208,44 @@ function showFinal(){
 $('fMenu').onclick=()=>{M=null;phase='idle';go('home');renderHome()};
 $('fReplay').onclick=()=>startMatch(M.cat);
 
+/* =========================================================
+   MOTS À JOUR : words.json (même dossier que le jeu), fusionné avec les mots intégrés.
+   Format : {"themes":[{"id":"animaux","words":["Axolotl"]},          -> AJOUTE des mots à un thème existant
+                       {"id":"noel","name":"Noël","em":"🎄","c":"#15803d","adult":false,"words":[...]}, -> NOUVEAU thème
+                       {"id":"metiers","replace":true,"words":[...]}]}  -> REMPLACE la liste d'un thème
+   ========================================================= */
+const BASE=CATS.map(c=>({...c,words:c.words.slice()}));
+function applyRemote(data){
+  if(!data||!Array.isArray(data.themes))return 0;
+  const out=BASE.map(c=>({...c,words:c.words.slice()}));let added=0;
+  for(const t of data.themes){
+    if(!t||!t.id||!Array.isArray(t.words))continue;
+    const ws=[...new Set(t.words.map(w=>String(w).trim()).filter(Boolean))];
+    const ex=out.find(c=>c.id===t.id);
+    if(ex){
+      if(t.replace){ex.words=ws;added+=ws.length}
+      else{const st=new Set(ex.words);ws.forEach(w=>{if(!st.has(w)){st.add(w);ex.words.push(w);added++}})}
+      if(t.name)ex.name=String(t.name);
+    }else if(t.name&&ws.length){
+      out.push({id:String(t.id),name:String(t.name),em:t.em||'🆕',c:/^#[0-9a-f]{6}$/i.test(t.c||'')?t.c:'#6366f1',adult:t.adult?1:0,words:ws});added+=ws.length;
+    }
+  }
+  CATS.length=0;out.forEach(c=>CATS.push(c));return added;
+}
+async function loadRemote(manual){
+  let data=null,online=false;
+  try{const r=await fetch('words.json',{cache:'no-cache'});if(r.ok){data=await r.json();online=true;LS.set('remote',data);LS.set('remoteAt',Date.now())}}catch(e){}
+  if(!data)data=LS.get('remote',null);
+  const n=applyRemote(data);
+  renderHome();
+  const at=LS.get('remoteAt',0);
+  $('remoteInfo').textContent=at?`Dernière mise à jour : ${new Date(at).toLocaleString('fr-FR',{dateStyle:'short',timeStyle:'short'})}`:'Nouveaux mots et thèmes depuis words.json';
+  if(manual)toast(online?(n?`Mots à jour : +${n} mot(s) ajoutés`:'Déjà à jour'):'Pas de connexion ou words.json introuvable');
+}
+$('updWords').onclick=()=>loadRemote(true);
+applyRemote(LS.get('remote',null)); // dernière version connue, même hors ligne
 renderHome();
+loadRemote(false);
 </script>
 </body>
 </html>

@@ -1,0 +1,62 @@
+{
+  "themes": [
+    {
+      "id": "animaux",
+      "words": [
+        "Axolotl",
+        "Capybara",
+        "Tamanoir",
+        "Ouistiti"
+      ]
+    },
+    {
+      "id": "noel",
+      "name": "Noël",
+      "em": "🎄",
+      "c": "#15803d",
+      "adult": false,
+      "words": [
+        "Père Noël",
+        "Sapin",
+        "Guirlande",
+        "Boule de Noël",
+        "Crèche",
+        "Réveillon",
+        "Dinde aux marrons",
+        "Bûche de Noël",
+        "Papillotes",
+        "Calendrier de l'Avent",
+        "Lutin",
+        "Renne",
+        "Traîneau",
+        "Cheminée",
+        "Chaussette de Noël",
+        "Cadeau",
+        "Papier cadeau",
+        "Marché de Noël",
+        "Vin chaud",
+        "Pain d'épices",
+        "Bonhomme en pain d'épices",
+        "Houx",
+        "Gui",
+        "Flocon de neige",
+        "Bonhomme de neige",
+        "Messe de minuit",
+        "Chants de Noël",
+        "Lettre au Père Noël",
+        "Elfe",
+        "Boule à neige",
+        "Foie gras",
+        "Huîtres",
+        "Saumon fumé",
+        "Champagne",
+        "Pull de Noël moche",
+        "Cadeau pourri",
+        "Secret Santa",
+        "Rois mages",
+        "Galette des rois",
+        "Patinoire"
+      ]
+    }
+  ]
+}
