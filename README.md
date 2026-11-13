@@ -1,7 +1,7 @@
 # devinedevine
 
 Jeu de soirée « Sur le Front » : téléphone sur le front, les autres font deviner.
-Incline vers le haut pour valider, vers le bas pour passer. Mode équipes, thèmes 18+, QR code de partage.
+Incline vers le bas (écran vers le sol) pour valider, vers le haut (écran vers le plafond) pour passer. Mode équipes, thèmes 18+, QR code de partage.
 
 Jouer : https://funappi.github.io/devinedevine/
 

@@ -131,7 +131,7 @@ textarea{min-height:220px;resize:vertical}
 #rot h3{font-size:26px;margin:14px 0 6px}
 #rot p{color:var(--mute);margin:0 0 12px;line-height:1.4}
 #rot .row{justify-content:center;margin-bottom:10px}
-.gauge{position:relative;height:46px;border-radius:99px;overflow:hidden;background:linear-gradient(90deg,rgba(249,115,22,.35),#120f1c 40%,#120f1c 60%,rgba(34,197,94,.35))}
+.gauge{position:relative;height:46px;border-radius:99px;overflow:hidden;background:linear-gradient(90deg,rgba(34,197,94,.35),#120f1c 40%,#120f1c 60%,rgba(249,115,22,.35))}
 .gauge .gl,.gauge .gr{position:absolute;top:0;bottom:0;display:flex;align-items:center;font-size:12px;font-weight:700;color:var(--mute);padding:0 14px}
 .gauge .gl{left:0}.gauge .gr{right:0}
 .gauge i{position:absolute;top:5px;left:50%;width:36px;height:36px;margin-left:-18px;border-radius:50%;background:#fff;box-shadow:0 2px 8px #0008;transition:left .08s linear}
@@ -159,7 +159,7 @@ textarea{min-height:220px;resize:vertical}
       <div class="logo">Sur le <span>Front</span></div>
       <div style="display:flex;gap:8px"><button class="iconbtn" id="openShare" aria-label="Partager le jeu (QR code)">📲</button><button class="iconbtn" id="openSettings" aria-label="Réglages">⚙️</button></div>
     </header>
-    <p class="sub">Téléphone sur le front, les autres font deviner. Incline vers le <b>haut</b> pour valider, vers le <b>bas</b> pour passer.</p>
+    <p class="sub">Téléphone sur le front, les autres font deviner. Incline vers le <b>bas</b> (écran vers le sol) pour valider, vers le <b>haut</b> (écran vers le plafond) pour passer.</p>
 
     <div class="bar2">
       <div><b>👥 Mode équipes</b><small id="teamSub"></small></div>
@@ -231,9 +231,9 @@ textarea{min-height:220px;resize:vertical}
       <div id="sHelp" class="info" style="margin:8px 0 0"></div>
     </div>
     <div class="field">
-      <div class="gauge"><span class="gl">⬇️ passer</span><span class="gr">valider ⬆️</span><i id="gDot"></i></div>
+      <div class="gauge"><span class="gl">⬇️ valider</span><span class="gr">passer ⬆️</span><i id="gDot"></i></div>
       <div id="gState" class="gstate">Neutre</div>
-      <small>Tiens le téléphone comme sur ton front, puis incline-le vers le plafond (valider) et vers le sol (passer). Les deux sens doivent faire bouger le point.</small>
+      <small>Tiens le téléphone comme sur ton front, puis incline-le vers le sol (valider) et vers le plafond (passer). Les deux sens doivent faire bouger le point.</small>
     </div>
     <div class="row"><button class="btn ghost" id="sRecal">Recalibrer</button><button class="btn" id="sensorOk">Terminé</button></div>
   </div>
@@ -1694,6 +1694,7 @@ for(let i=0;i<4;i++){ // un champ par prénom (migration de l'ancien format text
 }
 const saveS=()=>LS.set('settings',S);
 const saveTC=()=>LS.set('teamcfg',TC);
+if(LS.get('gestv',0)<2){S.invert=false;LS.set('gestv',2);saveS()} // v2 : sol = valider, plafond = passer (réinitialise l'ancien réglage)
 
 const $=id=>document.getElementById(id);
 function go(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));window.scrollTo(0,0);if(typeof applyOrient==='function')applyOrient()}
@@ -1870,7 +1871,7 @@ function renderSettings(){
   const ss=$('segSens');ss.innerHTML='';
   [['Faible',1],['Normale',2],['Forte',3]].forEach(([l,v])=>{const b=document.createElement('button');b.textContent=l;b.className=S.sens===v?'on':'';b.onclick=()=>{S.sens=v;saveS();renderSettings()};ss.appendChild(b)});
   $('swInvert').classList.toggle('on',S.invert);
-  $('invTxt').textContent=S.invert?'Actuel : écran vers le sol = valider, vers le plafond = passer':'Actuel : écran vers le plafond = valider, vers le sol = passer';
+  $('invTxt').textContent=S.invert?'Actuel : écran vers le plafond = valider, vers le sol = passer':'Actuel : écran vers le sol = valider, vers le plafond = passer';
   $('swSound').classList.toggle('on',S.sound);$('swVib').classList.toggle('on',S.vib);$('swTap').classList.toggle('on',S.tap);
 }
 [['swInvert','invert'],['swSound','sound'],['swVib','vib'],['swTap','tap']].forEach(([id,k])=>$(id).onclick=()=>{S[k]=!S[k];saveS();renderSettings()});
@@ -1980,9 +1981,9 @@ function updGauge(){
   const pos=50+Math.max(-1,Math.min(1,d/(act*1.4)))*46;
   $('gDot').style.left=pos+'%';
   const st=$('gState');
-  const up=S.invert?'PASSE ⬆️':'VALIDÉ ⬆️', down=S.invert?'VALIDÉ ⬇️':'PASSE ⬇️';
-  if(d>act){st.textContent=up;st.style.color=S.invert?'var(--pass)':'var(--ok)'}
-  else if(d<-act){st.textContent=down;st.style.color=S.invert?'var(--ok)':'var(--pass)'}
+  const up=S.invert?'VALIDÉ ⬆️':'PASSE ⬆️', down=S.invert?'PASSE ⬇️':'VALIDÉ ⬇️';
+  if(d>act){st.textContent=up;st.style.color=S.invert?'var(--ok)':'var(--pass)'}
+  else if(d<-act){st.textContent=down;st.style.color=S.invert?'var(--pass)':'var(--ok)'}
   else{st.textContent='Neutre';st.style.color='var(--mute)'}
 }
 $('openSensor').onclick=()=>{
@@ -2001,8 +2002,8 @@ function checkTilt(){
   const d=upZ-neutral,{act,rearm}=thresholds();
   if(!armed){if(Math.abs(d)<rearm)armed=true;return}
   if(performance.now()<cooldown)return;
-  if(d>act)act_(S.invert?'pass':'ok');
-  else if(d<-act)act_(S.invert?'ok':'pass');
+  if(d>act)act_(S.invert?'ok':'pass');        // écran vers le plafond = passer (par défaut)
+  else if(d<-act)act_(S.invert?'pass':'ok');  // écran vers le sol = valider (par défaut)
 }
 
 /* =========================================================
@@ -2030,7 +2031,7 @@ async function start(c){
 function prepareTurn(label,title,hint){
   results=[];
   $('rCat').textContent=label;
-  const ok=S.invert?'⬇️ écran vers le sol':'⬆️ écran vers le plafond', pass=S.invert?'⬆️ écran vers le plafond':'⬇️ écran vers le sol';
+  const ok=S.invert?'⬆️ écran vers le plafond':'⬇️ écran vers le sol', pass=S.invert?'⬇️ écran vers le sol':'⬆️ écran vers le plafond';
   $('rLegend').innerHTML=`<div style="color:var(--ok)">${ok} = valider</div><div style="color:var(--pass)">${pass} = passer</div>`;
   phase='ready';go('ready');
   $('rTitle').textContent=title;$('rHint').textContent=hint;
