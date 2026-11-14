@@ -7,8 +7,16 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Sur le Front">
-<title>Sur le Front – jeu d'ambiance</title>
+<meta name="apple-mobile-web-app-title" content="devinedevine">
+<title>devinedevine – jeu d'ambiance</title>
+<meta name="description" content="Jeu d'ambiance gratuit : téléphone sur le front, les autres font deviner. Incline pour valider ou passer. Mode équipes, thèmes 18+, QR code de partage.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="devinedevine – jeu d'ambiance">
+<meta property="og:description" content="Jeu d'ambiance gratuit : téléphone sur le front, les autres font deviner. Incline pour valider ou passer. Mode équipes, thèmes 18+, QR code de partage.">
+<meta property="og:url" content="https://funappi.github.io/devinedevine/">
+<meta property="og:image" content="https://funappi.github.io/devinedevine/docs/partage.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&display=swap" rel="stylesheet">
 <style>
@@ -156,7 +164,7 @@ textarea{min-height:220px;resize:vertical}
 <section id="home" class="screen on">
   <div class="wrap">
     <header class="top">
-      <div class="logo">Sur le <span>Front</span></div>
+      <div class="logo">devine<span>devine</span></div>
       <div style="display:flex;gap:8px"><button class="iconbtn" id="openShare" aria-label="Partager le jeu (QR code)">📲</button><button class="iconbtn" id="openSettings" aria-label="Réglages">⚙️</button></div>
     </header>
     <p class="sub">Téléphone sur le front, les autres font deviner. Incline vers le <b>bas</b> (écran vers le sol) pour valider, vers le <b>haut</b> (écran vers le plafond) pour passer.</p>
@@ -1856,7 +1864,7 @@ $('qrCopy').onclick=async()=>{
 };
 $('qrSave').onclick=()=>{
   try{
-    const a=document.createElement('a');a.download='sur-le-front-qr.png';a.href=$('qrCanvas').toDataURL('image/png');
+    const a=document.createElement('a');a.download='devinedevine-qr.png';a.href=$('qrCanvas').toDataURL('image/png');
     document.body.appendChild(a);a.click();a.remove();toast('QR code enregistré');
   }catch(e){toast('Maintiens ton doigt sur le QR pour l\'enregistrer')}
 };
